@@ -46,10 +46,12 @@ instance.interceptors.response.use(
       data: { code, message },
     } = response;
 
-    util_helper.toast({
-      type: code,
-      message: message,
-    });
+    if (message) {
+      util_helper.toast({
+        type: code,
+        message: message,
+      });
+    }
 
     return response;
   },

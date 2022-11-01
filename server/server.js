@@ -32,6 +32,52 @@ app.get("/", (req, res) => {
   res.send("Hello.");
 });
 
+app.get("/login", (req, res) => {
+  const result = {
+    code: "fail",
+  };
+
+  const loginUser = req.session.loginUser;
+
+  if (loginUser) {
+    result.code = "success";
+    result.user = loginUser;
+  }
+
+  res.send(result);
+});
+
+app.post("/login", async (req, res) => {
+  const {
+    input_value: { email, password },
+  } = req.body;
+
+  const result = {
+    code: "success",
+    message: "로그인 성공",
+  };
+
+  const user_row_sql = `SELECT * FROM code_exam.user WHERE email = '${email}' AND password = '${password}'`;
+  const user_row = await Model.excute({
+    database: "code_exam",
+    sql: user_row_sql,
+    type: "row",
+  });
+
+  if (!user_row) {
+    result.code = "error";
+    result.message = "로그인 실패 [정보 불일치]";
+
+    res.send(result);
+    return;
+  }
+
+  req.session.loginUser = user_row;
+  req.session.save();
+
+  res.send(result);
+});
+
 app.post("/join", async (req, res) => {
   const { input_value } = req.body;
 

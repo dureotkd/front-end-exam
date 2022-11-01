@@ -58,3 +58,10 @@ input,
 button:disabled {
   cursor: not-allowed !important;
 }
+
+.box-shadow-01 {
+  box-shadow: rgba(3, 102, 214, 0.3) 4px 6px 2px 3px;
+  background-color: #fff;
+  border-radius: 6px;
+  min-height: 600px;
+}
