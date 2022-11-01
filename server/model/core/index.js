@@ -57,6 +57,12 @@ class Core {
           console.log(JSON.stringify(err));
         } else {
           connection.query(sql, function (err, data, option) {
+            if (err) {
+              console.log("DB 쿼리 오류", err);
+              reject(true);
+              return;
+            }
+
             switch (type) {
               case "all":
                 resolve(data);
@@ -66,7 +72,6 @@ class Core {
                 if (data) resolve(data[0]);
                 else reject(new Error("empty"));
 
-                // resolve(data[0] || {});
                 break;
 
               case "exec":

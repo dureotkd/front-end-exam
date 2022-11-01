@@ -7,9 +7,9 @@ import { Login, Join, Main } from "./pages";
 function AppIndex() {
   return (
     <Routes>
-      <Route path="/" element={<Main />} />
+      <Route path="/main" element={<Main />} />
       <Route path="/join" element={<Join />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
     </Routes>
   );
 }

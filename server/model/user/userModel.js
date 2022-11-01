@@ -3,16 +3,32 @@ const Core = require("../core");
 class UserModel extends Core {
   constructor(props) {
     super(props);
-
-    this.table = "champs";
     this.core = new Core();
   }
 
-  getData() {}
+  getRow() {
+    const sql = "SELECT * FROM code_exam.`user`";
 
-  getRow() {}
+    const res = this.core.excute({
+      database: "code_exam",
+      sql: sql,
+      type: "row",
+    });
 
-  getRowByPk(seq) {}
+    return res;
+  }
+
+  getRowByPk(seq) {
+    const sql = `SELECT * FROM code_exam.user WHERE seq = ${seq}`;
+
+    const res = this.core.excute({
+      database: "code_exam",
+      sql: sql,
+      type: "row",
+    });
+
+    return res;
+  }
 
   getAll() {
     const sql = "SELECT * FROM code_exam.`user`";
@@ -27,6 +43,6 @@ class UserModel extends Core {
   }
 }
 
-const champModel = new ChampModel();
+const UserModel = new UserModel();
 
 module.exports = champModel;

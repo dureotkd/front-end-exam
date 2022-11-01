@@ -53,3 +53,8 @@ p {
 input:focus {
   border: 2px solid #2146c7 !important;
 }
+
+input,
+button:disabled {
+  cursor: not-allowed !important;
+}
