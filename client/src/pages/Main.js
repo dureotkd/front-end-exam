@@ -1,10 +1,8 @@
 import React from "react";
 import { UserContext } from "../App";
 
-function Main(param) {
+function Main() {
   const loginUser = React.useContext(UserContext);
-
-  console.log(loginUser);
 
   return (
     <div

@@ -64,6 +64,8 @@ app.post("/login", async (req, res) => {
     type: "row",
   });
 
+  console.log(user_row);
+
   if (!user_row) {
     result.code = "error";
     result.message = "로그인 실패 [정보 불일치]";
@@ -117,6 +119,69 @@ app.post("/join", async (req, res) => {
   res.send(result);
 });
 
+app.get("/exam", async (req, res) => {
+  const { seq } = req.query;
+
+  const sql = `SELECT * FROM exam a WHERE a.seq = '${seq}'`;
+
+  console.log(req.query);
+
+  const exam_row = await Model.excute({
+    database: "code_exam",
+    sql: sql,
+    type: "row",
+  });
+
+  res.send(exam_row);
+});
+
+app.post("/exam", async (req, res) => {
+  const {
+    data: { level, title },
+    body,
+  } = req.body;
+
+  const now_date = get_now_date();
+
+  const sql = Model.getInsertQuery({
+    table: "exam",
+    data: {
+      level: level,
+      title: title,
+      body: body,
+      reg_date: now_date,
+      edit_date: now_date,
+    },
+  });
+
+  const insert_seq = await Model.excute({
+    database: "code_exam",
+    sql: sql,
+    type: "exec",
+  });
+
+  res.send({
+    code: "success",
+    data: insert_seq,
+  });
+});
+
 app.listen(port, () => {
   console.log("서버시작");
 });
+
+function get_now_date() {
+  const today = new Date();
+
+  const year = today.getFullYear();
+  const month = ("0" + (today.getMonth() + 1)).slice(-2);
+  const day = ("0" + today.getDate()).slice(-2);
+
+  const hour = today.getHours();
+  const min = today.getMinutes();
+  const sec = today.getSeconds();
+
+  const dateString = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
+
+  return dateString;
+}

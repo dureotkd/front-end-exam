@@ -1,7 +1,7 @@
 import React from "react";
 
 const InputLabel = React.memo(
-  ({ item: { label, name, placeholder }, onChange }) => {
+  ({ item: { label, name, placeholder, value }, onChange }) => {
     let type = name.startsWith("password") ? "password" : "text";
     if (name === "email") type = "email";
 
@@ -12,6 +12,7 @@ const InputLabel = React.memo(
           onChange={onChange}
           type={type}
           name={name}
+          value={value}
           style={{
             marginTop: 10,
             border: "1px solid #d2d2d2",

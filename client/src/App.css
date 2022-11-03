@@ -16,6 +16,7 @@ a {
 
 button {
   cursor: pointer;
+  border: none;
 }
 
 input,
@@ -54,7 +55,7 @@ input:focus {
   border: 2px solid #2146c7 !important;
 }
 
-input,
+/* input, */
 button:disabled {
   cursor: not-allowed !important;
 }
@@ -64,4 +65,35 @@ button:disabled {
   background-color: #fff;
   border-radius: 6px;
   min-height: 600px;
+}
+
+.toastui-editor-contents code {
+  background-color: #2146c7 !important;
+}
+
+.toastui-editor-contents hr {
+  border: 0.5px solid #263238 !important;
+}
+
+.toastui-editor-contents span {
+  font-size: 17px !important;
+  line-height: 120px;
+}
+
+.scrollBar::-webkit-scrollbar {
+  width: 8px; /* 스크롤바의 너비 */
+}
+
+.scrollBar::-webkit-scrollbar-thumb {
+  background: #37485d; /* 스크롤바의 색상 */
+}
+
+.exam-btn {
+  width: 120px;
+  height: 40px;
+  font-weight: bold;
+  background-color: #263238;
+  color: #fff;
+  font-size: 16;
+  border-radius: 6;
 }
