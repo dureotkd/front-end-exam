@@ -8,10 +8,20 @@ import { useParams } from "react-router-dom";
 import ajax from "../apis/ajax";
 import CodeMirrorComponent from "../components/CodeMirror";
 
+// class Console {
+//   log(val) {
+//     alert(val);
+//   }
+// }
+
+// const console = new Console();
+
 function Exam() {
   const { seq } = useParams();
 
   const [exam, setExam] = React.useState(null);
+
+  React.useEffect(() => {}, []);
 
   React.useEffect(() => {
     (async () => {
@@ -23,7 +33,6 @@ function Exam() {
         })
         .then(({ data }) => {
           if (!data) {
-            alert("..?");
             return;
           }
 
@@ -37,11 +46,26 @@ function Exam() {
     setCode(value);
   }, []);
   const 코드실행 = React.useCallback(() => {
-    // eslint-disable-next-line no-eval
-    // eval(code);
+    //
+
+    const 콘솔프로토타입상속 = `const Console = function () {};
+    const ConsoleObject = {
+      log(s) {
+        
+        const my_log = document.getElementById('my_log');
+        const div_log = document.createElement('div');
+        div_log.classList = 'log-msg'; 
+        div_log.innerText = s;
+        my_log.append(div_log);
+
+      },
+    };
+    Console.prototype.__proto__ = ConsoleObject;
+    const console = new Console();`;
+    const 최종코드 = 콘솔프로토타입상속 + code;
+
     // eslint-disable-next-line no-new-func
-    const a = new Function(code)();
-    console.log(a);
+    new Function(최종코드)();
   }, [code]);
 
   React.useEffect(() => {
@@ -55,7 +79,9 @@ function Exam() {
 
       switch (key_code) {
         // F9 (코드실행)
+
         case 120:
+        case 17:
           코드실행();
           break;
 
@@ -101,9 +127,7 @@ function Exam() {
         >
           <CodeMirrorComponent value={code} onChange={코드작성} />
 
-          <div>
-            <h1>{code}</h1>
-          </div>
+          <div id="my_log" className="code_result"></div>
         </div>
       </div>
       <div
