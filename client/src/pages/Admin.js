@@ -1,19 +1,22 @@
 import React from "react";
 
+// =============================== TOAST UI ========================================
+
 // Toast 에디터
 import { Editor } from "@toast-ui/react-editor";
-import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
 import "prismjs/themes/prism.css";
+
+import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
 import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight";
 import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css";
-import Prism from "prismjs"; // prism 테마 추가
-
 import "@toast-ui/editor/dist/i18n/ko-kr";
-
 import "@toast-ui/editor/dist/toastui-editor.css";
 
 import "tui-color-picker/dist/tui-color-picker.css";
 import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
+
+// =============================== TOAST UI ========================================
+
 import { InputLabel } from "../components";
 import ajax from "../apis/ajax";
 import { useNavigate } from "react-router-dom";
