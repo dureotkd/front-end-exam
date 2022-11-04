@@ -1,3 +1,15 @@
+@charset "utf-8";
+
+@font-face {
+  font-family: "HackBold";
+  src: url("../public/fonts/Hack-Bold.ttf");
+}
+
+@font-face {
+  font-family: "HackRegular";
+  src: url("../public/fonts/Hack-Regular.ttf");
+}
+
 * {
   box-sizing: border-box;
   padding: 0px;
@@ -80,12 +92,25 @@ button:disabled {
   line-height: 120px;
 }
 
-.scrollBar::-webkit-scrollbar {
+.scrollBar::-webkit-scrollbar,
+#my_log::-webkit-scrollbar,
+.cm-scroller::-webkit-scrollbar {
   width: 8px; /* 스크롤바의 너비 */
 }
 
 .scrollBar::-webkit-scrollbar-thumb {
   background: #37485d; /* 스크롤바의 색상 */
+}
+
+/* 스크롤바 막대 설정*/
+#my_log::-webkit-scrollbar-thumb {
+  background-color: #37485d;
+  /* 스크롤바 둥글게 설정    */
+}
+
+/* 스크롤바 뒷 배경 설정*/
+#my_log::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .exam-btn {
@@ -98,6 +123,24 @@ button:disabled {
   border-radius: 6;
 }
 
-.cm-theme-dark {
+.cm-theme-dark div {
+  font-size: 16px;
+  font-family: "HackRegular";
+}
+
+pre {
   font-size: 18px;
+  font-family: "HackRegular";
+  line-height: 1.5;
+}
+
+#my_log {
+  height: 45%;
+  overflow: scroll;
+  overflow-x: hidden;
+  /* padding: 12px; */
+  margin-top: 1px;
+  padding: 12px;
+  border: 0.5px solid #263238;
+  border-top: none;
 }

@@ -8,13 +8,21 @@ import { useParams } from "react-router-dom";
 import ajax from "../apis/ajax";
 import CodeMirrorComponent from "../components/CodeMirror";
 
-// class Console {
-//   log(val) {
-//     alert(val);
-//   }
-// }
+const 에러로그보여줘 = (error) => {
+  const my_log = document.getElementById("my_log");
+  const div_log = document.createElement("pre");
+  div_log.classList = "log-msg";
+  div_log.innerText = error.stack;
+  my_log.append(div_log);
+};
 
-// const console = new Console();
+const 이전로그다지워 = () => {
+  const my_log = document.getElementById("my_log");
+
+  while (my_log.firstChild) {
+    my_log.removeChild(my_log.firstChild);
+  }
+};
 
 function Exam() {
   const { seq } = useParams();
@@ -46,35 +54,40 @@ function Exam() {
     setCode(value);
   }, []);
   const 코드실행 = React.useCallback(() => {
-    //
+    이전로그다지워();
 
-    const 콘솔프로토타입상속 = `const Console = function () {};
-    const ConsoleObject = {
-      log(s) {
-        
-        const my_log = document.getElementById('my_log');
-        const div_log = document.createElement('div');
-        div_log.classList = 'log-msg'; 
-        div_log.innerText = s;
-        my_log.append(div_log);
+    const 콘솔프로토타입상속 = `
 
-      },
-    };
-    Console.prototype.__proto__ = ConsoleObject;
-    const console = new Console();`;
+      const c = window.console;
+
+      const Console = function () {};
+      const ConsoleObject = {
+        log(s) {
+          const my_log = document.getElementById("my_log");
+          const div_log = document.createElement("pre");
+          div_log.classList = "log-msg";
+          div_log.innerText = JSON.stringify(s, undefined, 2);
+          my_log.append(div_log);
+          c.log(s);
+        },
+      };
+      Console.prototype.__proto__ = ConsoleObject;
+      const console = new Console();
+
+    `;
+
     const 최종코드 = 콘솔프로토타입상속 + code;
 
-    // eslint-disable-next-line no-new-func
-    new Function(최종코드)();
+    try {
+      // eslint-disable-next-line no-new-func
+      new Function(최종코드)();
+    } catch (error) {
+      에러로그보여줘(error);
+    }
   }, [code]);
 
   React.useEffect(() => {
     const 키보드탐지 = (event) => {
-      // Should do nothing if the default action has been cancelled
-      if (event.defaultPrevented) {
-        return;
-      }
-
       const key_code = event.keyCode;
 
       switch (key_code) {
