@@ -81,6 +81,8 @@ button:disabled {
 
 .toastui-editor-contents code {
   background-color: #2146c7 !important;
+  border-color: #2146c7 !important;
+  color: #cdd7e0;
 }
 
 .toastui-editor-contents hr {
@@ -129,18 +131,25 @@ button:disabled {
 }
 
 pre {
-  font-size: 18px;
+  font-size: 16px;
   font-family: "HackRegular";
   line-height: 1.5;
+  color: #afe2a8;
+  padding-bottom: 16px;
+  border-bottom: 0.1px solid #5a5f73;
+  padding-top: 24px;
+  padding-left: 16px;
 }
 
 #my_log {
   height: 45%;
   overflow: scroll;
   overflow-x: hidden;
-  /* padding: 12px; */
   margin-top: 1px;
-  padding: 12px;
   border: 0.5px solid #263238;
   border-top: none;
+}
+
+.margin-left-wrap > button {
+  margin-left: 12px;
 }

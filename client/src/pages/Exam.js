@@ -110,21 +110,74 @@ function Exam() {
     };
   }, [코드실행]);
 
+  const [timer, setTimer] = React.useState(null);
+  const 타이머시작 = React.useCallback(() => {
+    setTimer(timer === null ? "00:00" : null);
+  }, [timer]);
+  React.useEffect(() => {
+    if (timer === null) {
+      return;
+    }
+    console.log(timer);
+
+    const interval = setInterval(() => {
+      const timmerArr = timer.split(":");
+
+      const now_date = new Date(
+        "2021",
+        "07",
+        "06",
+        "1",
+        timmerArr[0],
+        parseInt(timmerArr[1]) + 1
+      );
+
+      let min = now_date.getMinutes();
+      let sec = now_date.getSeconds();
+
+      let res_min = min < 10 ? `0${min}` : min;
+      let res_sec = sec < 10 ? `0${sec}` : sec;
+
+      setTimer(`${res_min}:${res_sec}`);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [timer]);
+
   if (exam === null) {
     return <div>;;</div>;
   }
 
   return (
     <div style={{ backgroundColor: "#263747", height: "100vh" }}>
-      <div style={{ padding: 20, borderBottom: "1px solid #263238" }}>
+      <div
+        style={{
+          padding: 20,
+          borderBottom: "1px solid #263238",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <h2>{exam.title}</h2>
+        <div className="margin-left-wrap" style={{ display: "flex" }}>
+          <button type="button" className="exam-btn">
+            단축키 설명
+          </button>
+          <button type="button" className="exam-btn" onClick={타이머시작}>
+            {timer ? timer : "타이머"}
+          </button>
+        </div>
       </div>
       <div style={{ display: "flex", height: "85%" }}>
         <div
           className="scrollBar"
           style={{
             width: "45%",
-            padding: 20,
+            padding: 14,
+            paddingLeft: 20,
             borderRight: "1px solid #263238",
             height: "100%",
             overflow: "scroll",

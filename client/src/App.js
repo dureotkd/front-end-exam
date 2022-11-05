@@ -8,6 +8,7 @@ import AppIndex from "./AppIndex";
 import { ToastContainer } from "react-toastify";
 
 import ajax from "./apis/ajax";
+import { ModalContainer } from "./components";
 
 export const UserContext = React.createContext({});
 
@@ -17,8 +18,6 @@ function App() {
   React.useEffect(() => {
     (async () => {
       await ajax.get("/login").then(({ data: { code, user } }) => {
-        console.log(code);
-
         if (code === "success") {
           setLoginUser(user);
         }
@@ -32,6 +31,7 @@ function App() {
         <AppIndex />
       </UserContext.Provider>
       <ToastContainer />
+      <ModalContainer />
     </React.Fragment>
   );
 }
