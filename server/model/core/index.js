@@ -50,7 +50,7 @@ class Core {
    * ? Promise 객체에 대해서 자세히 공부해보기
    * ? Callback 함수에 대해서 자세히 공부해보기
    */
-  excute({ database, sql, type }) {
+  excute({ database = "code_exam", sql, type }) {
     return new Promise(function (resolve, reject) {
       db.getConnection(database, function (err, connection) {
         if (err) {

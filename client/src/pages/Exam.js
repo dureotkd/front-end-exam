@@ -6,7 +6,9 @@ import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
 import { useParams } from "react-router-dom";
 import ajax from "../apis/ajax";
-import CodeMirrorComponent from "../components/CodeMirror";
+import { CodeMirror, ExecuteButton, InputLabel } from "../components/index";
+import { cookie_helper, empty, time_helper } from "../helpers";
+import { UserContext } from "../App";
 
 const 에러로그보여줘 = (error) => {
   const my_log = document.getElementById("my_log");
@@ -24,15 +26,67 @@ const 이전로그다지워 = () => {
   }
 };
 
+function QuestionForm() {
+  const [inputs, setInputs] = React.useState([
+    {
+      label: "제목",
+      name: "title",
+      value: "",
+      placeholder: "제목을 입력해 주세요",
+    },
+    {
+      label: "내용",
+      name: "body",
+      value: "",
+      placeholder:
+        "문제와 관련된 질문을 구체적으로 작성해 주세요. \n타인에 대한 비방이나 욕설, 광고, 정답 공개 등 게시판의 목적과 관련 없는 내용은 삭제될 수 있습니다.",
+    },
+  ]);
+
+  return (
+    <div>
+      <h2>질문하기</h2>
+
+      <div>
+        {inputs &&
+          inputs.map((item, index) => {
+            return (
+              <InputLabel
+                key={`input-label-${index}`}
+                item={item}
+                // onChange={handleInputValue}
+              />
+            );
+          })}
+      </div>
+    </div>
+  );
+}
+
 function Exam() {
   const { seq } = useParams();
 
-  const [exam, setExam] = React.useState(null);
+  const { setShowModal } = React.useContext(UserContext);
 
-  React.useEffect(() => {}, []);
+  const [exam, setExam] = React.useState(null);
+  const [code, setCode] = React.useState(
+    "function solution() { }\nconsole.log(solution());"
+  );
+
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     (async () => {
+      const unresolve_exam_cookie = cookie_helper.get("unresolve_exam");
+
+      if (!empty(unresolve_exam_cookie)) {
+        const a = unresolve_exam_cookie.replace('"', "");
+        const b = a.replace('"', "");
+        const c = b.replaceAll("SECRET_FORMAT_STRING_KAPA", ";");
+        const f = c.replaceAll("\\n", "\n");
+        setCode(f);
+      }
+
       await ajax
         .get("/exam", {
           params: {
@@ -46,10 +100,23 @@ function Exam() {
 
           setExam(data);
         });
+
+      setLoading(false);
     })();
   }, [seq]);
 
-  const [code, setCode] = React.useState("");
+  React.useEffect(() => {
+    window.onbeforeunload = function () {
+      const set_data = JSON.stringify(code).replaceAll(
+        ";",
+        "SECRET_FORMAT_STRING_KAPA"
+      );
+      cookie_helper.set("unresolve_exam", set_data, 100);
+
+      return "zzz";
+    };
+  }, [code, seq]);
+
   const 코드작성 = React.useCallback((value) => {
     setCode(value);
   }, []);
@@ -118,7 +185,6 @@ function Exam() {
     if (timer === null) {
       return;
     }
-    console.log(timer);
 
     const interval = setInterval(() => {
       const timmerArr = timer.split(":");
@@ -146,7 +212,44 @@ function Exam() {
     };
   }, [timer]);
 
-  if (exam === null) {
+  const 답제출 = React.useCallback(async () => {
+    const 로그엘리먼트들 = document.querySelectorAll("#my_log .log-msg");
+
+    const answer = [];
+
+    if (로그엘리먼트들.length > 0) {
+      로그엘리먼트들.forEach((item) => {
+        answer.push(item.innerText.replaceAll('"', ""));
+      });
+    }
+
+    await ajax
+      .post("/answer", {
+        seq: seq,
+        answer: answer,
+      })
+      .then(async ({ data: { code } }) => {
+        if (code === "success") {
+          await time_helper.wait(4000);
+        }
+      });
+  }, [seq]);
+
+  const 질문하기 = React.useCallback(() => {
+    setShowModal({
+      show: true,
+      component: QuestionForm,
+    });
+  }, [setShowModal]);
+
+  const 단축키알려줄게 = React.useCallback(() => {
+    setShowModal({
+      show: true,
+      component: null,
+    });
+  }, [setShowModal]);
+
+  if (loading === true) {
     return <div>;;</div>;
   }
 
@@ -161,9 +264,12 @@ function Exam() {
           alignItems: "center",
         }}
       >
-        <h2>{exam.title}</h2>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <h2>{exam.title}</h2>
+          <div className="category-box">초급</div>
+        </div>
         <div className="margin-left-wrap" style={{ display: "flex" }}>
-          <button type="button" className="exam-btn">
+          <button type="button" className="exam-btn" onClick={단축키알려줄게}>
             단축키 설명
           </button>
           <button type="button" className="exam-btn" onClick={타이머시작}>
@@ -191,8 +297,7 @@ function Exam() {
           id="code_mirror_wrap"
           style={{ padding: 20, height: "100%", flexDirection: "column" }}
         >
-          <CodeMirrorComponent value={code} onChange={코드작성} />
-
+          <CodeMirror value={code} onChange={코드작성} />
           <div id="my_log" className="code_result"></div>
         </div>
       </div>
@@ -205,6 +310,7 @@ function Exam() {
         }}
       >
         <button
+          onClick={질문하기}
           className="exam-btn"
           style={{
             width: 120,
@@ -218,14 +324,13 @@ function Exam() {
         >
           질문하기
         </button>
-        <div>
-          <button className="exam-btn">코드실행</button>
-          <button
-            className="exam-btn"
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <ExecuteButton text="코드실행" onClick={코드실행} />
+          <ExecuteButton
+            text="제출하기"
+            onClick={답제출}
             style={{ marginLeft: 12, backgroundColor: "#2146c7" }}
-          >
-            제출하기
-          </button>
+          />
         </div>
       </div>
     </div>

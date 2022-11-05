@@ -42,7 +42,6 @@ instance.interceptors.response.use(
     response
   ) => {
     const {
-      status,
       data: { code, message },
     } = response;
 
