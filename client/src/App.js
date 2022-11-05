@@ -8,15 +8,16 @@ import AppIndex from "./AppIndex";
 import { ToastContainer } from "react-toastify";
 
 import ajax from "./apis/ajax";
-import { ModalContainer } from "./components";
+import { Header, ModalContainer } from "./components";
 
 export const UserContext = React.createContext({});
 
 function App() {
   const [loginUser, setLoginUser] = React.useState({});
   const [showModal, setShowModal] = React.useState({
-    show: false,
-    component: null,
+    show: false, // 모달 보여주는거 정의
+    code: null, // state가 필요한 모달 컴포넌트 경우 케이스별로 달라짐
+    component: null, // state가 필요없는 컴포넌트
   });
 
   React.useEffect(() => {

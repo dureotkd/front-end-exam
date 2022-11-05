@@ -4,9 +4,9 @@ import { Viewer } from "@toast-ui/react-editor";
 
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import ajax from "../apis/ajax";
-import { CodeMirror, ExecuteButton, InputLabel } from "../components/index";
+import { CodeMirror, ExecuteButton, Header } from "../components/index";
 import { cookie_helper, empty, time_helper } from "../helpers";
 import { UserContext } from "../App";
 
@@ -26,43 +26,6 @@ const 이전로그다지워 = () => {
   }
 };
 
-function QuestionForm() {
-  const [inputs, setInputs] = React.useState([
-    {
-      label: "제목",
-      name: "title",
-      value: "",
-      placeholder: "제목을 입력해 주세요",
-    },
-    {
-      label: "내용",
-      name: "body",
-      value: "",
-      placeholder:
-        "문제와 관련된 질문을 구체적으로 작성해 주세요. \n타인에 대한 비방이나 욕설, 광고, 정답 공개 등 게시판의 목적과 관련 없는 내용은 삭제될 수 있습니다.",
-    },
-  ]);
-
-  return (
-    <div>
-      <h2>질문하기</h2>
-
-      <div>
-        {inputs &&
-          inputs.map((item, index) => {
-            return (
-              <InputLabel
-                key={`input-label-${index}`}
-                item={item}
-                // onChange={handleInputValue}
-              />
-            );
-          })}
-      </div>
-    </div>
-  );
-}
-
 function Exam() {
   const { seq } = useParams();
 
@@ -70,7 +33,7 @@ function Exam() {
 
   const [exam, setExam] = React.useState(null);
   const [code, setCode] = React.useState(
-    "function solution() { }\nconsole.log(solution());"
+    "function solution() { \n\n}\n\nconsole.log(solution());"
   );
 
   const [loading, setLoading] = React.useState(true);
@@ -78,11 +41,10 @@ function Exam() {
   React.useEffect(() => {
     (async () => {
       const unresolve_exam_cookie = cookie_helper.get("unresolve_exam");
+      const a = unresolve_exam_cookie.replaceAll('"', "");
 
-      if (!empty(unresolve_exam_cookie)) {
-        const a = unresolve_exam_cookie.replace('"', "");
-        const b = a.replace('"', "");
-        const c = b.replaceAll("SECRET_FORMAT_STRING_KAPA", ";");
+      if (!empty(a)) {
+        const c = a.replaceAll("SECRET_FORMAT_STRING_KAPA", ";");
         const f = c.replaceAll("\\n", "\n");
         setCode(f);
       }
@@ -113,7 +75,7 @@ function Exam() {
       );
       cookie_helper.set("unresolve_exam", set_data, 100);
 
-      return "zzz";
+      return "사이트에서 나가시겠습니까?";
     };
   }, [code, seq]);
 
@@ -238,7 +200,7 @@ function Exam() {
   const 질문하기 = React.useCallback(() => {
     setShowModal({
       show: true,
-      component: QuestionForm,
+      code: "QUESTION",
     });
   }, [setShowModal]);
 
@@ -255,6 +217,7 @@ function Exam() {
 
   return (
     <div style={{ backgroundColor: "#263747", height: "100vh" }}>
+      <Header navigation="Javascript > 알고리즘 문제" />
       <div
         style={{
           padding: 20,
@@ -277,7 +240,7 @@ function Exam() {
           </button>
         </div>
       </div>
-      <div style={{ display: "flex", height: "85%" }}>
+      <div style={{ display: "flex", height: "80%" }}>
         <div
           className="scrollBar"
           style={{
@@ -290,12 +253,21 @@ function Exam() {
             overflowX: "hidden",
           }}
         >
-          <Viewer initialValue={exam?.body || ""} />
+          <Viewer
+            linkAttributes="rel"
+            usageStatistics={false}
+            initialValue={exam?.body || ""}
+          />
         </div>
 
         <div
           id="code_mirror_wrap"
-          style={{ padding: 20, height: "100%", flexDirection: "column" }}
+          style={{
+            padding: 20,
+            width: "65%",
+            height: "100%",
+            flexDirection: "column",
+          }}
         >
           <CodeMirror value={code} onChange={코드작성} />
           <div id="my_log" className="code_result"></div>

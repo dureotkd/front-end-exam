@@ -4,6 +4,11 @@ const port = 4000;
 
 const cors = require("cors");
 
+const fs = require("fs");
+const multer = require("multer");
+const path = require("path");
+const mime = require("mime");
+
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 
@@ -27,6 +32,16 @@ app.use(
     credentials: true,
   })
 );
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + "_" + Date.now() + ".png");
+  },
+});
+const upload = multer({ storage });
 
 app.get("/", (req, res) => {
   res.send("Hello.");
@@ -64,8 +79,6 @@ app.post("/login", async (req, res) => {
     type: "row",
   });
 
-  console.log(user_row);
-
   if (!user_row) {
     result.code = "error";
     result.message = "로그인 실패 [정보 불일치]";
@@ -76,6 +89,18 @@ app.post("/login", async (req, res) => {
 
   req.session.loginUser = user_row;
   req.session.save();
+
+  res.send(result);
+});
+
+app.post("/logout", (req, res) => {
+  const result = {
+    code: "success",
+  };
+
+  req.session.destroy(function () {
+    req.session;
+  });
 
   res.send(result);
 });
@@ -120,19 +145,98 @@ app.post("/join", async (req, res) => {
 });
 
 app.get("/exam", async (req, res) => {
+  const { loginUser } = req.session;
   const { seq } = req.query;
 
-  const sql = `SELECT * FROM exam a WHERE a.seq = '${seq}'`;
-
-  console.log(req.query);
+  const now_date = get_now_date();
 
   const exam_row = await Model.excute({
     database: "code_exam",
-    sql: sql,
+    sql: `SELECT * FROM exam a WHERE a.seq = '${seq}'`,
     type: "row",
   });
 
+  let user_ids = exam_row.user_ids;
+
+  if (user_ids.includes(`${loginUser.seq}/`) === true) {
+    res.send(exam_row);
+    return;
+  }
+
+  user_ids += `${loginUser.seq}/`;
+
+  const update_sql = Model.getUpdateQuery({
+    table: "exam",
+    data: {
+      user_ids: user_ids,
+      edit_date: now_date,
+    },
+    where: [`seq = ${seq}`],
+  });
+
+  await Model.excute({
+    sql: update_sql,
+    type: "exec",
+  });
+
   res.send(exam_row);
+});
+
+app.get("/all/exam", async (req, res) => {
+  const { loginUser } = req.session;
+
+  const { cnt } = await Model.excute({
+    database: "code_exam",
+    sql: `SELECT COUNT(*) as cnt FROM exam`,
+    type: "row",
+  });
+
+  // get_paging();
+
+  const exam_all = await Model.excute({
+    database: "code_exam",
+    sql: `SELECT * FROM exam`,
+    type: "all",
+  });
+
+  const exam_all_data = [];
+
+  const level_vo = {
+    1: "초급",
+    2: "중급",
+    3: "고급",
+  };
+
+  if (!empty(exam_all)) {
+    exam_all.forEach((item) => {
+      const success_user_ids = item.success_user_ids;
+      const user_ids = item.user_ids;
+      const status = success_user_ids.includes(loginUser.seq + "/")
+        ? "SUCCESS"
+        : "";
+
+      const success_len = !empty(success_user_ids)
+        ? success_user_ids.split("/").length - 1
+        : 0;
+
+      const user_len = !empty(user_ids) ? user_ids.split("/").length - 1 : 0;
+
+      const percent =
+        !empty(user_len) && !empty(success_len)
+          ? ((success_len / user_len) * 100).toFixed(0) + "%"
+          : "";
+
+      item.percent = percent;
+      item.user_len = user_len;
+      item.status = status;
+      item.level_name = level_vo[item.level];
+      item.date = timeForToday(item.edit_date);
+
+      exam_all_data.push(item);
+    });
+  }
+
+  res.send(exam_all_data);
 });
 
 app.post("/exam", async (req, res) => {
@@ -170,8 +274,10 @@ app.post("/exam", async (req, res) => {
 
 /** */
 app.post("/answer", async (req, res) => {
+  const { loginUser } = req.session;
   const { seq, answer } = req.body;
 
+  const now_date = get_now_date();
   const result = {
     code: "success",
     message: "정답입니다",
@@ -207,6 +313,23 @@ app.post("/answer", async (req, res) => {
       result.message = "오답입니다";
       break;
     }
+
+    if (exam_row.success_user_ids.includes(loginUser.seq) === false) {
+      const update_sql = Model.getUpdateQuery({
+        table: "exam",
+        data: {
+          success_user_ids: exam_row.success_user_ids + loginUser.seq + "/",
+          edit_date: now_date,
+        },
+        where: [`seq = ${seq}`],
+      });
+
+      await Model.excute({
+        database: "code_exam",
+        sql: update_sql,
+        type: "exec",
+      });
+    }
   }
 
   if (result.code === "error") {
@@ -217,8 +340,94 @@ app.post("/answer", async (req, res) => {
   res.send(result);
 });
 
+app.post("/question", upload.array("files"), async (req, res) => {
+  const { title, body } = req.body;
+  const files = req?.files || [];
+
+  const loginUser = req.session.loginUser;
+
+  const result = {
+    code: "success",
+    message: "질문이 등록되었습니다",
+  };
+
+  for (let {} in [1]) {
+    if (empty(loginUser)) {
+      result.code = "error";
+      result.message = "로그인 후 이용해주세요";
+      break;
+    }
+
+    if (empty(title)) {
+      result.code = "error";
+      result.message = "제목을 입력해주세요";
+      break;
+    }
+    if (empty(body)) {
+      result.code = "error";
+      result.message = "내용을 입력해주세요";
+      break;
+    }
+  }
+
+  if (result.code === "error") {
+    res.send(result);
+    return;
+  }
+  const now_date = get_now_date();
+
+  const answer_sql = Model.getInsertQuery({
+    table: "answer",
+    data: {
+      title: title,
+      body: body,
+      user_seq: loginUser.seq,
+      reg_date: now_date,
+      edit_date: now_date,
+    },
+  });
+
+  const anser_insert_seq = await Model.excute({
+    sql: answer_sql,
+    type: "exec",
+  });
+
+  if (!empty(files)) {
+    for (let key in files) {
+      const { mimetype, size, path, filename } = files[key];
+      const time = Date.now();
+
+      const file_sql = Model.getInsertQuery({
+        table: "file",
+        data: {
+          name: `${time}_${filename}`,
+          origin_name: filename,
+          path: path,
+          mime: mimetype,
+          byte: size,
+          target_table: "answer",
+          target_seq: anser_insert_seq,
+          reg_date: now_date,
+          edit_date: now_date,
+        },
+      });
+
+      await Model.excute({
+        sql: file_sql,
+        type: "exec",
+      });
+    }
+  }
+
+  res.send(result);
+});
+
 app.listen(port, () => {
-  console.log("서버시작");
+  const dir = "./uploads";
+
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
 });
 
 function get_now_date() {
@@ -235,6 +444,31 @@ function get_now_date() {
   const dateString = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
 
   return dateString;
+}
+
+function timeForToday(value) {
+  const today = new Date();
+  const timeValue = new Date(value);
+
+  const betweenTime = Math.floor(
+    (today.getTime() - timeValue.getTime()) / 1000 / 60
+  );
+  if (betweenTime < 1) return "방금전";
+  if (betweenTime < 60) {
+    return `${betweenTime}분전`;
+  }
+
+  const betweenTimeHour = Math.floor(betweenTime / 60);
+  if (betweenTimeHour < 24) {
+    return `${betweenTimeHour}시간전`;
+  }
+
+  const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
+  if (betweenTimeDay < 365) {
+    return `${betweenTimeDay}일전`;
+  }
+
+  return `${Math.floor(betweenTimeDay / 365)}년전`;
 }
 
 // 넘어온 값이 빈값인지 체크합니다.

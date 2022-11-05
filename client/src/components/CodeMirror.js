@@ -11,7 +11,6 @@ function CodeMirrorComponent({ value, onChange }) {
     <CodeMirror
       value={value}
       height="400px"
-      width="1200px"
       extensions={[javascript({ jsx: true })]}
       onChange={onChange}
       theme="dark"

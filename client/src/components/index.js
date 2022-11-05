@@ -3,5 +3,13 @@ import InputLabel from "./InputLabel";
 import CodeMirror from "./CodeMirror";
 import ModalContainer from "./ModalContainer";
 import ExecuteButton from "./ExecuteButton";
+import Header from "./Header";
 
-export { AuthLayout, InputLabel, CodeMirror, ModalContainer, ExecuteButton };
+export {
+  Header,
+  AuthLayout,
+  InputLabel,
+  CodeMirror,
+  ModalContainer,
+  ExecuteButton,
+};
