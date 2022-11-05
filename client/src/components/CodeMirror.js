@@ -4,7 +4,7 @@ import { javascript } from "@codemirror/lang-javascript";
 
 function CodeMirrorComponent({ value, onChange }) {
   React.useLayoutEffect(() => {
-    const code_mirror_wrap = document.getElementById("ode_mirror_wrap");
+    // const code_mirror_wrap = document.getElementById("ode_mirror_wrap");
   }, []);
 
   return (

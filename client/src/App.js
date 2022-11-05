@@ -14,6 +14,10 @@ export const UserContext = React.createContext({});
 
 function App() {
   const [loginUser, setLoginUser] = React.useState({});
+  const [showModal, setShowModal] = React.useState({
+    show: false,
+    component: null,
+  });
 
   React.useEffect(() => {
     (async () => {
@@ -27,11 +31,16 @@ function App() {
 
   return (
     <React.Fragment>
-      <UserContext.Provider value={loginUser}>
+      <UserContext.Provider
+        value={{
+          loginUser,
+          setShowModal,
+        }}
+      >
         <AppIndex />
       </UserContext.Provider>
       <ToastContainer />
-      <ModalContainer />
+      <ModalContainer showModal={showModal} setShowModal={setShowModal} />
     </React.Fragment>
   );
 }

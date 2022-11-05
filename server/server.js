@@ -137,7 +137,7 @@ app.get("/exam", async (req, res) => {
 
 app.post("/exam", async (req, res) => {
   const {
-    data: { level, title },
+    data: { level, title, answer },
     body,
   } = req.body;
 
@@ -149,6 +149,8 @@ app.post("/exam", async (req, res) => {
       level: level,
       title: title,
       body: body,
+      category: "javascript",
+      answer: answer,
       reg_date: now_date,
       edit_date: now_date,
     },
@@ -164,6 +166,55 @@ app.post("/exam", async (req, res) => {
     code: "success",
     data: insert_seq,
   });
+});
+
+/** */
+app.post("/answer", async (req, res) => {
+  const { seq, answer } = req.body;
+
+  const result = {
+    code: "success",
+    message: "정답입니다",
+  };
+
+  for (let {} in [1]) {
+    if (!seq) {
+      result.code = "error";
+      result.message = "필수값 부족";
+      break;
+    }
+
+    if (answer.length === 0) {
+      result.code = "error";
+      result.message = "코드실행 후 제출해주세요";
+      break;
+    }
+
+    const exam_row = await Model.excute({
+      database: "code_exam",
+      sql: `SELECT * FROM code_exam.exam WHERE seq = ${seq}`,
+      type: "row",
+    });
+
+    if (empty(exam_row)) {
+      result.code = "error";
+      result.message = "문제가 존재하지 않습니다";
+      break;
+    }
+
+    if (exam_row.answer != answer[answer.length - 1]) {
+      result.code = "error";
+      result.message = "오답입니다";
+      break;
+    }
+  }
+
+  if (result.code === "error") {
+    res.send(result);
+    return;
+  }
+
+  res.send(result);
 });
 
 app.listen(port, () => {
@@ -185,3 +236,20 @@ function get_now_date() {
 
   return dateString;
 }
+
+// 넘어온 값이 빈값인지 체크합니다.
+// !value 하면 생기는 논리적 오류를 제거하기 위해
+// 명시적으로 value == 사용
+// [], {} 도 빈값으로 처리
+var empty = function (value) {
+  if (
+    value == "" ||
+    value == null ||
+    value == undefined ||
+    (value != null && typeof value == "object" && !Object.keys(value).length)
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};

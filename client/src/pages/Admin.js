@@ -25,8 +25,9 @@ function Admin() {
   const navigation = useNavigate();
   const editorRef = React.useRef("");
   const [data, setData] = React.useState({
-    level: 0,
+    level: 1,
     title: "",
+    answer: "",
   });
   const [body, setBody] = React.useState("");
 
@@ -79,6 +80,7 @@ function Admin() {
         <option value="2">중급</option>
         <option value="3">고급</option>
       </select>
+
       <Editor
         ref={editorRef}
         onChange={에디터내용가져오자}
@@ -98,6 +100,13 @@ function Admin() {
         plugins={[colorSyntax, codeSyntaxHighlight]}
         language="ko-KR"
       />
+      <textarea
+        style={{ margin: 20, width: 500, height: 150 }}
+        name="answer"
+        onChange={기본정보넣자}
+      >
+        {data.answer}
+      </textarea>
       <button
         onClick={문제내자}
         style={{
