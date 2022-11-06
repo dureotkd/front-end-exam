@@ -8,7 +8,6 @@ function AppIndex() {
   return (
     <Routes>
       <Route exact path="/" element={<Login />} />
-      <Route exact path="/main" element={<Main />} />
       <Route exact path="/join" element={<Join />} />
       <Route exact path="/exam">
         <Route path=":seq" element={<Exam />} />
