@@ -59,7 +59,7 @@ instance.interceptors.response.use(
     // 응답 에러
     error
   ) => {
-    const status = error.response.status;
+    const status = error?.response?.status;
 
     switch (status) {
       case 401:
