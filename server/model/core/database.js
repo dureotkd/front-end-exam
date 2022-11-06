@@ -4,7 +4,7 @@ const db = mysql.createPoolCluster();
 db.add("code_exam", {
   host: "52.79.106.68",
   user: "root",
-  password: "@Slsksh671201@",
+  password: "",
   database: "code_exam",
   port: 3306,
 });
