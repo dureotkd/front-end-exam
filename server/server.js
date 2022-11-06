@@ -35,7 +35,7 @@ app.use(
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads");
+    cb(null, "../client/public/uploads");
   },
   filename: function (req, file, cb) {
     cb(null, file.fieldname + "_" + Date.now() + ".png");
@@ -51,11 +51,11 @@ app.use((req, res, next) => {
   const 로그인필요없는요청 = ["login", "logout", "join"];
 
   if (로그인필요없는요청.includes(req_name) === false && empty(loginUser)) {
-    res.status(401).send({
-      code: "error",
-      message: "로그인 후 이용해주세요",
-    });
-    return;
+    // res.status(401).send({
+    //   code: "error",
+    //   message: "로그인 후 이용해주세요",
+    // });
+    // return;
   }
 
   next();
@@ -237,8 +237,8 @@ app.get("/all/exam", async (req, res) => {
 
   if (!empty(exam_all)) {
     exam_all.forEach((item) => {
-      const success_user_ids = item.success_user_ids;
-      const user_ids = item.user_ids;
+      const success_user_ids = item?.success_user_ids || "";
+      const user_ids = item?.user_ids || "";
       const status = success_user_ids.includes(loginUser.seq + "/")
         ? "SUCCESS"
         : "";
@@ -246,6 +246,7 @@ app.get("/all/exam", async (req, res) => {
       const success_len = !empty(success_user_ids)
         ? success_user_ids.split("/").length - 1
         : 0;
+      console.log(user_ids);
 
       const user_len = !empty(user_ids) ? user_ids.split("/").length - 1 : 0;
 
@@ -359,23 +360,23 @@ app.post("/answer", async (req, res) => {
         edit_date: now_date,
       },
       updateData: {
-        body: code,
+        result_body: code,
         edit_date: now_date,
       },
     });
 
-    console.log(exam_result_duplicate_sql);
+    const success_user_ids = exam_row?.success_user_ids || "";
 
     /**
      * 정답을 처음 맞출 경우
      */
-    if (exam_row.success_user_ids.includes(loginUser.seq) === false) {
+    if (success_user_ids.includes(loginUser.seq) === false) {
       // ========================== 성공 처리 ==========================
 
       const update_sql = Model.getUpdateQuery({
         table: "exam",
         data: {
-          success_user_ids: exam_row.success_user_ids + loginUser.seq + "/",
+          success_user_ids: success_user_ids + loginUser.seq + "/",
           edit_date: now_date,
         },
         where: [`seq = ${seq}`],
@@ -504,8 +505,44 @@ app.post("/question", upload.array("files"), async (req, res) => {
   res.send(result);
 });
 
+// ========================== exam_result ==========================
+
+app.post("/exam-result", async (req, res) => {
+  const { loginUser } = req.params;
+  const { seq, updateData } = req.body;
+
+  const now_date = get_now_date();
+
+  updateData.reg_date = now_date;
+  updateData.edit_date = now_date;
+
+  const duplicate_sql = Model.getDuplicateQuery({
+    table: "exam_result",
+    insertData: {
+      ...updateData,
+      user_seq: 1,
+      exam_seq: seq,
+    },
+    updateData: updateData,
+  });
+
+  console.log(duplicate_sql);
+
+  // await Model.excute({
+  //   database: "code_exam",
+  //   sql: duplicate_sql,
+  //   type: "exec",
+  // });
+
+  res.send({
+    code: "success",
+  });
+});
+
+// ========================== exam_result ==========================
+
 app.listen(port, () => {
-  const dir = "./uploads";
+  const dir = "../client/uploads";
 
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);

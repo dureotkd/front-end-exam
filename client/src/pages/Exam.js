@@ -68,13 +68,24 @@ function Exam() {
   }, [seq]);
 
   React.useEffect(() => {
-    window.onbeforeunload = function () {
-      const set_data = JSON.stringify(code).replaceAll(
+    window.onbeforeunload = async function () {
+      const a = JSON.stringify(code).replaceAll(
         ";",
         "SECRET_FORMAT_STRING_KAPA"
       );
-      cookie_helper.set("unresolve_exam", set_data, 100);
 
+      // const b = a.replaceAll("'", '"');
+
+      // const c = b.slice(0, -1);
+      // const d = c.slice(1);
+
+      // await ajax.post("/exam-result", {
+      //   seq: seq,
+      //   updateData: {
+      //     body: d,
+      //   },
+      // });
+      // cookie_helper.set("unresolve_exam", a, 1);
       // return "사이트에서 나가시겠습니까?";
     };
   }, [code, seq]);
@@ -280,9 +291,6 @@ function Exam() {
           <div className="category-box">초급</div>
         </div>
         <div className="margin-left-wrap" style={{ display: "flex" }}>
-          <button type="button" className="exam-btn" onClick={단축키알려줄게}>
-            단축키 설명
-          </button>
           <button type="button" className="exam-btn" onClick={타이머시작}>
             {timer ? timer : "타이머"}
           </button>

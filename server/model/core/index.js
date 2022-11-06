@@ -47,8 +47,13 @@ class Core {
 
     let update = "";
 
+    let len = 1;
+
     for (const [column, value] of Object.entries(updateData)) {
-      update += `${column}='${value}',`;
+      const last_str = updateData.length === len ? ";" : ",";
+      update += `${column}='${value}'${last_str}`;
+
+      len++;
     }
 
     return `INSERT INTO ${table} (${c}) VALUES (${v}) ON DUPLICATE KEY UPDATE ${update}`;

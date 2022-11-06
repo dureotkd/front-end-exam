@@ -41,7 +41,7 @@ function Problem() {
               <th>상태</th>
               <th>난이도</th>
               <th>제목</th>
-              <th>완료한 사람</th>
+              <th>진행중인 사람</th>
               <th>정답률</th>
               <th>날짜</th>
             </tr>
