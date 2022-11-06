@@ -35,6 +35,25 @@ class Core {
     return `UPDATE ${table} SET ${rc} WHERE ${rw}`;
   }
 
+  getDuplicateQuery({ table, insertData, updateData }) {
+    const i_column = Object.keys(insertData);
+    const i_values = Object.values(insertData);
+
+    if (i_column.length !== i_values.length)
+      return throwError("Error Object Key Value");
+
+    const c = i_column.join(",");
+    const v = i_values.join("','");
+
+    let update = "";
+
+    for (const [column, value] of Object.entries(updateData)) {
+      update += `${column}='${value}',`;
+    }
+
+    return `INSERT INTO ${table} (${c}) VALUES (${v}) ON DUPLICATE KEY UPDATE ${update}`;
+  }
+
   /**
    * * MAKE MYSQL DELETE 쿼리문
    */

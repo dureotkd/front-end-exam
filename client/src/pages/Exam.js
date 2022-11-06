@@ -189,6 +189,7 @@ function Exam() {
       .post("/answer", {
         seq: seq,
         answer: answer,
+        code: code,
       })
       .then(async ({ data: { code, last_yn } }) => {
         if (code === "success") {
@@ -206,25 +207,25 @@ function Exam() {
                   }}
                 >
                   <h2>정답입니다</h2>
-                  {last_yn === "N" && (
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <button
+                      className="exam-btn"
+                      style={{ marginRight: 12 }}
+                      onClick={() => {
+                        setShowModal({
+                          show: null,
+                          component: null,
+                        });
                       }}
                     >
-                      <button
-                        className="exam-btn"
-                        style={{ marginRight: 12 }}
-                        onClick={() => {
-                          setShowModal({
-                            show: null,
-                            component: null,
-                          });
-                        }}
-                      >
-                        머무르기
-                      </button>
+                      머무르기
+                    </button>
+                    {last_yn === "N" && (
                       <button
                         className="exam-btn"
                         style={{ backgroundColor: "#2146c7" }}
@@ -234,15 +235,15 @@ function Exam() {
                       >
                         다음 문제로 이동
                       </button>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               );
             },
           });
         }
       });
-  }, [navigation, seq, setShowModal]);
+  }, [code, seq, setShowModal]);
 
   const 질문하기 = React.useCallback(() => {
     setShowModal({
@@ -267,7 +268,7 @@ function Exam() {
       <Header navigation="Javascript > 알고리즘 문제" />
       <div
         style={{
-          padding: 20,
+          padding: "12px 20px",
           borderBottom: "1px solid #263238",
           display: "flex",
           justifyContent: "space-between",

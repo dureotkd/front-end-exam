@@ -303,7 +303,7 @@ app.post("/exam", async (req, res) => {
 /** */
 app.post("/answer", async (req, res) => {
   const { loginUser } = req.session;
-  const { seq, answer } = req.body;
+  const { seq, answer, code } = req.body;
 
   const now_date = get_now_date();
   const result = {
@@ -349,10 +349,29 @@ app.post("/answer", async (req, res) => {
 
     result.last_yn = last_exam_row.seq == seq ? "Y" : "N";
 
+    const exam_result_duplicate_sql = Model.getDuplicateQuery({
+      table: "exam",
+      insertData: {
+        body: code,
+        user_seq: loginUser.seq,
+        exam_seq: seq,
+        reg_date: now_date,
+        edit_date: now_date,
+      },
+      updateData: {
+        body: code,
+        edit_date: now_date,
+      },
+    });
+
+    console.log(exam_result_duplicate_sql);
+
     /**
      * 정답을 처음 맞출 경우
      */
     if (exam_row.success_user_ids.includes(loginUser.seq) === false) {
+      // ========================== 성공 처리 ==========================
+
       const update_sql = Model.getUpdateQuery({
         table: "exam",
         data: {
@@ -368,9 +387,14 @@ app.post("/answer", async (req, res) => {
         type: "exec",
       });
 
+      // ========================== 성공 처리 ==========================
+
+      // ========================== 다음 문제 처리 ==========================
+
       const last_exam_seq =
         last_exam_row.seq == seq ? last_exam_row.seq : parseInt(seq) + 1;
 
+      // 회원 다음 문제 처리
       const user_update_sql = Model.getUpdateQuery({
         table: "user",
         data: {
@@ -385,6 +409,8 @@ app.post("/answer", async (req, res) => {
         sql: user_update_sql,
         type: "exec",
       });
+
+      // ========================== 다음 문제 처리 ==========================
     }
   }
 
