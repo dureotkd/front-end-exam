@@ -275,8 +275,6 @@ function ModalContainer({
     };
   }, [setShowModal, show]);
 
-  const Component = component;
-
   return (
     <React.Fragment>
       <div
@@ -304,7 +302,7 @@ function ModalContainer({
               }
         }
       >
-        {Component && <Component />}
+        {component && component()}
         {
           {
             QUESTION: <QuestionForm />,

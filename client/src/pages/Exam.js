@@ -4,7 +4,7 @@ import { Viewer } from "@toast-ui/react-editor";
 
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ajax from "../apis/ajax";
 import { CodeMirror, ExecuteButton, Header } from "../components/index";
 import { cookie_helper, empty, time_helper } from "../helpers";
@@ -27,8 +27,8 @@ const 이전로그다지워 = () => {
 };
 
 function Exam() {
+  const navigation = useNavigate;
   const { seq } = useParams();
-
   const { setShowModal } = React.useContext(UserContext);
 
   const [exam, setExam] = React.useState(null);
@@ -75,7 +75,7 @@ function Exam() {
       );
       cookie_helper.set("unresolve_exam", set_data, 100);
 
-      return "사이트에서 나가시겠습니까?";
+      // return "사이트에서 나가시겠습니까?";
     };
   }, [code, seq]);
 
@@ -190,12 +190,59 @@ function Exam() {
         seq: seq,
         answer: answer,
       })
-      .then(async ({ data: { code } }) => {
+      .then(async ({ data: { code, last_yn } }) => {
         if (code === "success") {
-          await time_helper.wait(4000);
+          setShowModal({
+            show: true,
+            component: () => {
+              return (
+                <div
+                  className="modal-children-box"
+                  style={{
+                    minHeight: 280,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <h2>정답입니다</h2>
+                  {last_yn === "N" && (
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      <button
+                        className="exam-btn"
+                        style={{ marginRight: 12 }}
+                        onClick={() => {
+                          setShowModal({
+                            show: null,
+                            component: null,
+                          });
+                        }}
+                      >
+                        머무르기
+                      </button>
+                      <button
+                        className="exam-btn"
+                        style={{ backgroundColor: "#2146c7" }}
+                        onClick={() => {
+                          window.location.href = `/exam/${parseInt(seq) + 1}`;
+                        }}
+                      >
+                        다음 문제로 이동
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            },
+          });
         }
       });
-  }, [seq]);
+  }, [navigation, seq, setShowModal]);
 
   const 질문하기 = React.useCallback(() => {
     setShowModal({

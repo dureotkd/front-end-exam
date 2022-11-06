@@ -72,6 +72,7 @@ function AuthLayout({ onSubmit, onChange, inputs, disabled }) {
           inputs.map((item, index) => {
             return (
               <InputLabel
+                style={{ padding: "1.15rem 1.9rem" }}
                 key={`input-label-${index}`}
                 item={item}
                 onChange={onChange}

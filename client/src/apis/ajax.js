@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { util_helper } from "../helpers";
+import { time_helper, util_helper } from "../helpers";
 
 // ==================================== 요청 ======================================
 
@@ -55,14 +55,32 @@ instance.interceptors.response.use(
     return response;
   },
 
-  (
+  async (
     // 응답 에러
     error
   ) => {
-    util_helper.toast({
-      type: "error",
-      message: "서버에 문제가 생겼어요",
-    });
+    const status = error.response.status;
+
+    switch (status) {
+      case 401:
+        util_helper.toast({
+          type: "error",
+          message: "로그인 후 이용해주세요",
+        });
+
+        await time_helper.wait(3000);
+        window.location = "/";
+
+        break;
+
+      default:
+        util_helper.toast({
+          type: "error",
+          message: "서버에 문제가 생겼어요",
+        });
+
+        break;
+    }
 
     return Promise.reject(error);
   }

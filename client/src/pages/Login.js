@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 
 import { AuthLayout } from "../components";
 import ajax from "../apis/ajax";
-import { util_helper } from "../helpers";
 
 function Login(param) {
   const navigation = useNavigate();
@@ -71,8 +70,10 @@ function Login(param) {
         .post("/login", {
           input_value,
         })
-        .then(({ data: { code } }) => {
-          if (code === "success") navigation("/main");
+        .then(({ data: { code, direct_url } }) => {
+          if (code === "success") {
+            navigation(direct_url);
+          }
         });
     },
     [inputs, navigation]

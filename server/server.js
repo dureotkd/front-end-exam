@@ -43,6 +43,24 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+app.use((req, res, next) => {
+  const { loginUser } = req.session;
+
+  const path_array = req.path.split("/");
+  const req_name = path_array[path_array.length - 1];
+  const 로그인필요없는요청 = ["login", "logout", "join"];
+
+  if (로그인필요없는요청.includes(req_name) === false && empty(loginUser)) {
+    res.status(401).send({
+      code: "error",
+      message: "로그인 후 이용해주세요",
+    });
+    return;
+  }
+
+  next();
+});
+
 app.get("/", (req, res) => {
   res.send("Hello.");
 });
@@ -87,6 +105,10 @@ app.post("/login", async (req, res) => {
     return;
   }
 
+  const last_exam_seq = user_row.last_exam_seq;
+
+  result.direct_url = `/exam/${last_exam_seq}`;
+
   req.session.loginUser = user_row;
   req.session.save();
 
@@ -127,6 +149,12 @@ app.post("/join", async (req, res) => {
     res.send(result);
     return;
   }
+
+  const now_date = get_now_date();
+
+  input_value.reg_date = now_date;
+  input_value.edit_date = now_date;
+  input_value.last_exam_seq = 1;
 
   const insert_sql = Model.getInsertQuery({
     table: "user",
@@ -280,7 +308,6 @@ app.post("/answer", async (req, res) => {
   const now_date = get_now_date();
   const result = {
     code: "success",
-    message: "정답입니다",
   };
 
   for (let {} in [1]) {
@@ -314,6 +341,17 @@ app.post("/answer", async (req, res) => {
       break;
     }
 
+    const last_exam_row = await Model.excute({
+      database: "code_exam",
+      sql: `SELECT * FROM code_exam.exam ORDER BY reg_date DESC LIMIT 1`,
+      type: "row",
+    });
+
+    result.last_yn = last_exam_row.seq == seq ? "Y" : "N";
+
+    /**
+     * 정답을 처음 맞출 경우
+     */
     if (exam_row.success_user_ids.includes(loginUser.seq) === false) {
       const update_sql = Model.getUpdateQuery({
         table: "exam",
@@ -327,6 +365,24 @@ app.post("/answer", async (req, res) => {
       await Model.excute({
         database: "code_exam",
         sql: update_sql,
+        type: "exec",
+      });
+
+      const last_exam_seq =
+        last_exam_row.seq == seq ? last_exam_row.seq : parseInt(seq) + 1;
+
+      const user_update_sql = Model.getUpdateQuery({
+        table: "user",
+        data: {
+          last_exam_seq: last_exam_seq,
+          edit_date: now_date,
+        },
+        where: [`seq = ${loginUser.seq}`],
+      });
+
+      await Model.excute({
+        database: "code_exam",
+        sql: user_update_sql,
         type: "exec",
       });
     }
