@@ -194,9 +194,36 @@ function Exam() {
     const 로그엘리먼트들 = document.querySelectorAll("#my_log .log-msg");
     const answer = [];
 
-    // let sayHi = new Function(code);
+    let aa = '';
+    let 공백이쓰여진횟수 = 0;
 
-    // let a = sayHi()();
+    const codea = code.replaceAll(' ','');
+
+    const 솔루션위치2 = codea.indexOf('functionsolution');
+
+    for(let key in code) {
+      const x = code[key];
+
+      if (x === ' ') {
+
+        if (솔루션위치2 <= key) {
+          공백이쓰여진횟수++;
+        }
+        
+        aa += x;
+      }
+    }
+
+    const 솔루션위치 = codea.indexOf('functionsolution') + 공백이쓰여진횟수;
+
+    // let c = code.replaceAll(' ','');
+
+    let g = code.substring(0,솔루션위치) + 'return ' + code.substring(솔루션위치);
+
+    console.log(g);
+
+
+    // let 가상머신함수 = new Function(code);
 
     // console.log(a);
 
