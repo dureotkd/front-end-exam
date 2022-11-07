@@ -259,7 +259,7 @@ app.get("/all/exam", async (req, res) => {
       item.user_len = user_len;
       item.status = status;
       item.level_name = level_vo[item.level];
-      item.date = timeForToday(item.edit_date);
+      item.date = timeForToday(item.reg_date);
 
       exam_all_data.push(item);
     });
