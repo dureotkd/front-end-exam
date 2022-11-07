@@ -192,8 +192,15 @@ function Exam() {
 
   const 답제출 = React.useCallback(async () => {
     const 로그엘리먼트들 = document.querySelectorAll("#my_log .log-msg");
-
     const answer = [];
+
+    // let sayHi = new Function(code);
+
+    // let a = sayHi()();
+
+    // console.log(a);
+
+    // return;
 
     if (로그엘리먼트들.length > 0) {
       로그엘리먼트들.forEach((item) => {

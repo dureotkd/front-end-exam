@@ -350,21 +350,6 @@ app.post("/answer", async (req, res) => {
 
     result.last_yn = last_exam_row.seq == seq ? "Y" : "N";
 
-    const exam_result_duplicate_sql = Model.getDuplicateQuery({
-      table: "exam",
-      insertData: {
-        body: code,
-        user_seq: loginUser.seq,
-        exam_seq: seq,
-        reg_date: now_date,
-        edit_date: now_date,
-      },
-      updateData: {
-        result_body: code,
-        edit_date: now_date,
-      },
-    });
-
     const success_user_ids = exam_row?.success_user_ids || "";
 
     /**
@@ -385,6 +370,27 @@ app.post("/answer", async (req, res) => {
       await Model.excute({
         database: "code_exam",
         sql: update_sql,
+        type: "exec",
+      });
+
+      const exam_result_duplicate_sql = Model.getDuplicateQuery({
+        table: "exam",
+        insertData: {
+          body: code,
+          user_seq: loginUser.seq,
+          exam_seq: seq,
+          reg_date: now_date,
+          edit_date: now_date,
+        },
+        updateData: {
+          result_body: code,
+          edit_date: now_date,
+        },
+      });
+
+      await Model.excute({
+        database: "code_exam",
+        sql: exam_result_duplicate_sql,
         type: "exec",
       });
 
