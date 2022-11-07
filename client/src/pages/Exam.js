@@ -98,10 +98,11 @@ function Exam() {
   const 코드작성 = React.useCallback((value) => {
     setCode(value);
   }, []);
-  const 코드실행 = React.useCallback(() => {
-    이전로그다지워();
+  const 코드실행 = React.useCallback(
+    (value = "") => {
+      이전로그다지워();
 
-    const 콘솔프로토타입상속 = `
+      const 콘솔프로토타입상속 = `
 
       const c = window.console;
 
@@ -119,17 +120,23 @@ function Exam() {
       Console.prototype.__proto__ = ConsoleObject;
       const console = new Console();
 
+      if (${value} !== '') {
+        console.log(${value});
+      }
+
     `;
 
-    const 최종코드 = 콘솔프로토타입상속 + code;
+      const 최종코드 = 콘솔프로토타입상속 + code;
 
-    try {
-      // eslint-disable-next-line no-new-func
-      new Function(최종코드)();
-    } catch (error) {
-      에러로그보여줘(error);
-    }
-  }, [code]);
+      try {
+        // eslint-disable-next-line no-new-func
+        new Function(최종코드)();
+      } catch (error) {
+        에러로그보여줘(error);
+      }
+    },
+    [code]
+  );
 
   React.useEffect(() => {
     const 키보드탐지 = (event) => {
@@ -191,54 +198,28 @@ function Exam() {
   }, [timer]);
 
   const 답제출 = React.useCallback(async () => {
-    const 로그엘리먼트들 = document.querySelectorAll("#my_log .log-msg");
-    const answer = [];
-
-    let aa = '';
-    let 공백이쓰여진횟수 = 0;
-
-    const codea = code.replaceAll(' ','');
-
-    const 솔루션위치2 = codea.indexOf('functionsolution');
-
-    for(let key in code) {
-      const x = code[key];
-
-      if (x === ' ') {
-
-        if (솔루션위치2 <= key) {
-          공백이쓰여진횟수++;
-        }
-        
-        aa += x;
+    let 즉시실행함수로묶기 = ` 
+      return () => {
+        ${code}
+        return solution();
       }
-    }
+    `;
 
-    const 솔루션위치 = codea.indexOf('functionsolution') + 공백이쓰여진횟수;
+    // eslint-disable-next-line no-new-func
+    let 가상머신함수 = new Function(즉시실행함수로묶기);
+    let 유저의답 = "";
 
-    // let c = code.replaceAll(' ','');
-
-    let g = code.substring(0,솔루션위치) + 'return ' + code.substring(솔루션위치);
-
-    console.log(g);
-
-
-    // let 가상머신함수 = new Function(code);
-
-    // console.log(a);
-
-    // return;
-
-    if (로그엘리먼트들.length > 0) {
-      로그엘리먼트들.forEach((item) => {
-        answer.push(item.innerText.replaceAll('"', ""));
-      });
+    try {
+      유저의답 = 가상머신함수()();
+      코드실행(유저의답);
+    } catch (error) {
+      에러로그보여줘(error);
     }
 
     await ajax
       .post("/answer", {
         seq: seq,
-        answer: answer,
+        answer: 유저의답,
         code: code,
       })
       .then(async ({ data: { code, last_yn } }) => {

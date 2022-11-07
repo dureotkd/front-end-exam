@@ -317,13 +317,6 @@ app.post("/answer", async (req, res) => {
       result.message = "필수값 부족";
       break;
     }
-
-    if (answer.length === 0) {
-      result.code = "error";
-      result.message = "코드실행 후 제출해주세요";
-      break;
-    }
-
     const exam_row = await Model.excute({
       database: "code_exam",
       sql: `SELECT * FROM code_exam.exam WHERE seq = ${seq}`,
@@ -336,7 +329,7 @@ app.post("/answer", async (req, res) => {
       break;
     }
 
-    if (exam_row.answer != answer[answer.length - 1]) {
+    if (exam_row.answer != answer) {
       result.code = "error";
       result.message = "오답입니다";
       break;
