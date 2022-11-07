@@ -1,14 +1,19 @@
 import React from "react";
 
 import { Viewer } from "@toast-ui/react-editor";
-
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import ajax from "../apis/ajax";
-import { CodeMirror, ExecuteButton, Header } from "../components/index";
-import { cookie_helper, empty, time_helper } from "../helpers";
+import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../App";
+
+import ajax from "../apis/ajax";
+
+import {
+  CodeMirror,
+  ExecuteButton,
+  Header,
+  Horizontal,
+} from "../components/index";
 
 const 에러로그보여줘 = (error) => {
   const my_log = document.getElementById("my_log");
@@ -40,14 +45,14 @@ function Exam() {
 
   React.useEffect(() => {
     (async () => {
-      const unresolve_exam_cookie = cookie_helper.get("unresolve_exam");
-      const a = unresolve_exam_cookie.replaceAll('"', "");
+      // const unresolve_exam_cookie = cookie_helper.get("unresolve_exam");
+      // const a = unresolve_exam_cookie.replaceAll('"', "");
 
-      if (!empty(a)) {
-        const c = a.replaceAll("SECRET_FORMAT_STRING_KAPA", ";");
-        const f = c.replaceAll("\\n", "\n");
-        setCode(f);
-      }
+      // if (!empty(a)) {
+      //   const c = a.replaceAll("SECRET_FORMAT_STRING_KAPA", ";");
+      //   const f = c.replaceAll("\\n", "\n");
+      //   setCode(f);
+      // }
 
       await ajax
         .get("/exam", {
@@ -296,7 +301,7 @@ function Exam() {
           </button>
         </div>
       </div>
-      <div style={{ display: "flex", height: "80%" }}>
+      <div className="exam_box" style={{ display: "flex", height: "80%" }}>
         <div
           className="scrollBar"
           style={{
@@ -315,7 +320,7 @@ function Exam() {
             initialValue={exam?.body || ""}
           />
         </div>
-
+        <Horizontal />
         <div
           id="code_mirror_wrap"
           style={{

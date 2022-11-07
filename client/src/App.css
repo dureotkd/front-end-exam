@@ -359,3 +359,11 @@ pre {
 .active {
   background-color: #d7e0ff !important;
 }
+
+.horizontal {
+  width: 24px;
+  background: url(https://school.programmers.co.kr/assets/img-grippie-vertical-86e641691e88be56a100b80e3d437ae6effea08c189fdbdb2396825486763a15.png)
+    no-repeat 0.625rem 50%;
+  background-size: 0.875rem 2.25rem;
+  cursor: ew-resize;
+}

@@ -66,7 +66,7 @@ function Problem() {
                     </td>
                     <td style={{ width: 100 }}>{item.level_name}</td>
                     <td style={{ fontWeight: "bold" }}>{item.title}</td>
-                    <td style={{ width: 100 }}>{item.user_len}</td>
+                    <td style={{ width: 110 }}>{item.user_len}</td>
                     <td style={{ width: 80 }}>{item.percent}</td>
                     <td style={{ width: 100 }}>{item.date}</td>
                   </tr>
