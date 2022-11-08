@@ -8,7 +8,7 @@ import AppIndex from "./AppIndex";
 import { ToastContainer } from "react-toastify";
 
 import ajax from "./apis/ajax";
-import { Header, ModalContainer } from "./components";
+import { ModalContainer } from "./components";
 
 export const UserContext = React.createContext({});
 
@@ -23,6 +23,14 @@ function App() {
   React.useEffect(() => {
     (async () => {
       await ajax.get("/login").then(({ data: { code, user } }) => {
+        const pathname = window.location.pathname.split("/");
+        const 로그인되어있으면접근안되는주소 = ["", "join"];
+
+        // 로그인 되어있으면
+        if (로그인되어있으면접근안되는주소.includes(pathname[1]) && user) {
+          window.location.href = "/exam/1";
+        }
+
         if (code === "success") {
           setLoginUser(user);
         }

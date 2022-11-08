@@ -62,6 +62,7 @@ instance.interceptors.response.use(
     const status = error?.response?.status;
 
     switch (status) {
+
       case 401:
         util_helper.toast({
           type: "error",

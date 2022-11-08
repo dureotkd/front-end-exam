@@ -72,28 +72,28 @@ function Exam() {
     })();
   }, [seq]);
 
-  React.useEffect(() => {
-    window.onbeforeunload = async function () {
-      const a = JSON.stringify(code).replaceAll(
-        ";",
-        "SECRET_FORMAT_STRING_KAPA"
-      );
+  // React.useEffect(() => {
+  //   window.onbeforeunload = async function () {
+  //     const a = JSON.stringify(code).replaceAll(
+  //       ";",
+  //       "SECRET_FORMAT_STRING_KAPA"
+  //     );
 
-      // const b = a.replaceAll("'", '"');
+  //     // const b = a.replaceAll("'", '"');
 
-      // const c = b.slice(0, -1);
-      // const d = c.slice(1);
+  //     // const c = b.slice(0, -1);
+  //     // const d = c.slice(1);
 
-      // await ajax.post("/exam-result", {
-      //   seq: seq,
-      //   updateData: {
-      //     body: d,
-      //   },
-      // });
-      // cookie_helper.set("unresolve_exam", a, 1);
-      // return "사이트에서 나가시겠습니까?";
-    };
-  }, [code, seq]);
+  //     // await ajax.post("/exam-result", {
+  //     //   seq: seq,
+  //     //   updateData: {
+  //     //     body: d,
+  //     //   },
+  //     // });
+  //     // cookie_helper.set("unresolve_exam", a, 1);
+  //     // return "사이트에서 나가시겠습니까?";
+  //   };
+  // }, [code, seq]);
 
   const 코드작성 = React.useCallback((value) => {
     setCode(value);
