@@ -352,6 +352,9 @@ function Exam() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          width: "100%",
+          position: "absolute",
+          bottom: 12,
         }}
       >
         <button

@@ -184,7 +184,7 @@ app.get("/exam", async (req, res) => {
     type: "row",
   });
 
-  let user_ids = exam_row.user_ids;
+  let user_ids = exam_row?.user_ids || "";
 
   if (user_ids.includes(`${loginUser.seq}/`) === true) {
     res.send(exam_row);
@@ -366,26 +366,28 @@ app.post("/answer", async (req, res) => {
         type: "exec",
       });
 
-      const exam_result_duplicate_sql = Model.getDuplicateQuery({
-        table: "exam",
-        insertData: {
-          body: code,
-          user_seq: loginUser.seq,
-          exam_seq: seq,
-          reg_date: now_date,
-          edit_date: now_date,
-        },
-        updateData: {
-          result_body: code,
-          edit_date: now_date,
-        },
-      });
+      [good, time, studen];
 
-      await Model.excute({
-        database: "code_exam",
-        sql: exam_result_duplicate_sql,
-        type: "exec",
-      });
+      // const exam_result_duplicate_sql = Model.getDuplicateQuery({
+      //   table: "exam",
+      //   insertData: {
+      //     body: code,
+      //     user_seq: loginUser.seq,
+      //     exam_seq: seq,
+      //     reg_date: now_date,
+      //     edit_date: now_date,
+      //   },
+      //   updateData: {
+      //     result_body: code,
+      //     edit_date: now_date,
+      //   },
+      // });
+
+      // await Model.excute({
+      //   database: "code_exam",
+      //   sql: exam_result_duplicate_sql,
+      //   type: "exec",
+      // });
 
       // ========================== 성공 처리 ==========================
 
@@ -537,6 +539,14 @@ app.post("/exam-result", async (req, res) => {
     code: "success",
   });
 });
+
+// ========================== 키보드 마우스 후킹 시작 ================================
+
+app.get("/hook", (req, res) => {
+  res.send("/");
+});
+
+// ========================== 키보드 마우스 후킹 시작 ================================
 
 // ========================== exam_result ==========================
 
