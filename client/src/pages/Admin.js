@@ -22,14 +22,65 @@ import ajax from "../apis/ajax";
 import { useNavigate } from "react-router-dom";
 
 function Admin() {
+  const [key, seq] = window.location.search.slice(1).split("=");
+
   const navigation = useNavigate();
   const editorRef = React.useRef("");
+  const [loading, setLoading] = React.useState(true);
   const [data, setData] = React.useState({
     level: 1,
     title: "",
     answer: "",
   });
   const [body, setBody] = React.useState("");
+
+  React.useEffect(() => {
+    (async () => {
+      if (seq) {
+        await ajax
+          .get("/exam", {
+            params: {
+              seq: seq,
+            },
+          })
+          .then(({ data }) => {
+            setData((prev) => {
+              return {
+                ...prev,
+                title: data.title,
+                level: data.level,
+                answer: data.answer,
+              };
+            });
+
+            setBody(data.body);
+          });
+      }
+
+      setLoading(false);
+    })();
+  }, [seq]);
+
+  const 정답값만들어 = React.useCallback(() => {
+    // 1
+    const 정답케이스배열 = [
+      {
+        input: "BANANA",
+        answer: "B#N#N#",
+      },
+      {
+        input: "A1A123",
+        answer: "#1#123",
+      },
+    ];
+
+    setData((prev) => {
+      return {
+        ...prev,
+        answer: JSON.stringify(정답케이스배열),
+      };
+    });
+  }, []);
 
   const 문제내자 = React.useCallback(async () => {
     await ajax
@@ -39,7 +90,7 @@ function Admin() {
       })
       .then(({ data: { code, data } }) => {
         if (code === "success") {
-          navigation("/exam/" + data);
+          // navigation("/exam/" + data);
         }
       });
   }, [body, data, navigation]);
@@ -54,9 +105,15 @@ function Admin() {
   }, []);
 
   const 에디터내용가져오자 = React.useCallback(() => {
+    console.log(editorRef.current.getInstance());
+
     const data = editorRef.current.getInstance().getHTML();
     setBody(data);
   }, []);
+
+  if (loading === true) {
+    return <div>Loading</div>;
+  }
 
   return (
     <div style={{ padding: 20 }}>
@@ -80,9 +137,12 @@ function Admin() {
         <option value="2">중급</option>
         <option value="3">고급</option>
       </select>
-
+      <button onClick={정답값만들어} style={{ height: 30 }}>
+        Answer값 만들기버튼
+      </button>
       <Editor
         ref={editorRef}
+        initialValue={body}
         onChange={에디터내용가져오자}
         theme="dark"
         placeholder="내용을 입력해주세요."
@@ -100,6 +160,7 @@ function Admin() {
         plugins={[colorSyntax, codeSyntaxHighlight]}
         language="ko-KR"
       />
+      <pre>{data.answer}</pre>
       <textarea
         style={{ margin: 20, width: 500, height: 150 }}
         name="answer"

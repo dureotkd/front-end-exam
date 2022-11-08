@@ -38,22 +38,13 @@ function Exam() {
 
   const [exam, setExam] = React.useState(null);
   const [code, setCode] = React.useState(
-    "function solution() { \n\n}\n\nconsole.log(solution());"
+    "function solution(입력) { \n\n}\n\n\n\nconst 입력 = '';\nsolution(입력);"
   );
 
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     (async () => {
-      // const unresolve_exam_cookie = cookie_helper.get("unresolve_exam");
-      // const a = unresolve_exam_cookie.replaceAll('"', "");
-
-      // if (!empty(a)) {
-      //   const c = a.replaceAll("SECRET_FORMAT_STRING_KAPA", ";");
-      //   const f = c.replaceAll("\\n", "\n");
-      //   setCode(f);
-      // }
-
       await ajax
         .get("/exam", {
           params: {
@@ -71,29 +62,6 @@ function Exam() {
       setLoading(false);
     })();
   }, [seq]);
-
-  // React.useEffect(() => {
-  //   window.onbeforeunload = async function () {
-  //     const a = JSON.stringify(code).replaceAll(
-  //       ";",
-  //       "SECRET_FORMAT_STRING_KAPA"
-  //     );
-
-  //     // const b = a.replaceAll("'", '"');
-
-  //     // const c = b.slice(0, -1);
-  //     // const d = c.slice(1);
-
-  //     // await ajax.post("/exam-result", {
-  //     //   seq: seq,
-  //     //   updateData: {
-  //     //     body: d,
-  //     //   },
-  //     // });
-  //     // cookie_helper.set("unresolve_exam", a, 1);
-  //     // return "사이트에서 나가시겠습니까?";
-  //   };
-  // }, [code, seq]);
 
   const 코드작성 = React.useCallback((value) => {
     setCode(value);
@@ -202,20 +170,55 @@ function Exam() {
   }, [timer]);
 
   const 제출하기 = React.useCallback(async () => {
+    // 5 , 2
+    const 입력_array = [
+      {
+        input: [6, 5, 11],
+        answer: 5,
+      },
+      {
+        input: [10, 8, 2],
+        answer: 2,
+      },
+    ];
+
+    const 시험케이스배열 = JSON.parse(exam.answer);
+
     let 즉시실행함수로묶기 = ` 
-      return () => {
+      const EXCUTE_ANSWER = () => {
+
+        let 이사람이구현한값 = null;
+        const 내가비교할정답배열들 = [];
+
+        const 문자로변환 = '${JSON.stringify(시험케이스배열)}';
+        const 인풋과아웃풋들 = JSON.parse(문자로변환);
+
         ${code}
-        return solution();
+
+        for(let key in 인풋과아웃풋들) {
+          const { input , answer } = 인풋과아웃풋들[key];
+          내가비교할정답배열들.push(solution(input));
+        }
+
+        이사람이구현한값 = solution(입력);
+
+        return {
+          기본케이스 : 내가비교할정답배열들,
+          유저케이스 : 이사람이구현한값
+        };
       }
+
+      return EXCUTE_ANSWER;
     `;
 
-    let 유저의답 = "";
+    let 정답케이스들 = null;
 
     try {
       // eslint-disable-next-line no-new-func
       let 가상머신함수 = new Function(즉시실행함수로묶기);
-      유저의답 = 가상머신함수()();
-      코드실행(유저의답);
+      정답케이스들 = 가상머신함수()();
+      console.log(정답케이스들.유저케이스);
+      코드실행(정답케이스들.유저케이스);
     } catch (error) {
       에러로그보여줘(error);
     }
@@ -223,7 +226,7 @@ function Exam() {
     await ajax
       .post("/answer", {
         seq: seq,
-        answer: 유저의답,
+        answer: 정답케이스들,
         code: code,
       })
       .then(async ({ data: { code, last_yn } }) => {

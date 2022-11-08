@@ -50,10 +50,10 @@ app.use((req, res, next) => {
   const req_name = path_array[path_array.length - 1];
   const 로그인필요없는요청 = ["login", "logout", "join"];
 
-  if (로그인필요없는요청.includes(req_name) === false && empty(loginUser)) {
-    res.status(401).send("");
-    return;
-  }
+  // if (로그인필요없는요청.includes(req_name) === false && empty(loginUser)) {
+  //   res.status(401).send("");
+  //   return;
+  // }
 
   next();
 });
@@ -181,28 +181,28 @@ app.get("/exam", async (req, res) => {
     type: "row",
   });
 
-  let user_ids = exam_row?.user_ids || "";
+  // let user_ids = exam_row?.user_ids || "";
 
-  if (user_ids.includes(`${loginUser.seq}/`) === true) {
-    res.send(exam_row);
-    return;
-  }
+  // if (user_ids.includes(`${loginUser.seq}/`) === true) {
+  //   res.send(exam_row);
+  //   return;
+  // }
 
-  user_ids += `${loginUser.seq}/`;
+  // user_ids += `${loginUser.seq}/`;
 
-  const update_sql = Model.getUpdateQuery({
-    table: "exam",
-    data: {
-      user_ids: user_ids,
-      edit_date: now_date,
-    },
-    where: [`seq = ${seq}`],
-  });
+  // const update_sql = Model.getUpdateQuery({
+  //   table: "exam",
+  //   data: {
+  //     user_ids: user_ids,
+  //     edit_date: now_date,
+  //   },
+  //   where: [`seq = ${seq}`],
+  // });
 
-  await Model.excute({
-    sql: update_sql,
-    type: "exec",
-  });
+  // await Model.excute({
+  //   sql: update_sql,
+  //   type: "exec",
+  // });
 
   res.send(exam_row);
 });
@@ -273,15 +273,22 @@ app.post("/exam", async (req, res) => {
 
   const now_date = get_now_date();
 
-  const sql = Model.getInsertQuery({
+  const sql = Model.getDuplicateQuery({
     table: "exam",
-    data: {
+    insertData: {
       level: level,
       title: title,
       body: body,
       category: "javascript",
       answer: answer,
       reg_date: now_date,
+      edit_date: now_date,
+    },
+    updateData: {
+      title: title,
+      level: level,
+      body: body,
+      answer: answer,
       edit_date: now_date,
     },
   });
@@ -291,6 +298,8 @@ app.post("/exam", async (req, res) => {
     sql: sql,
     type: "exec",
   });
+
+  console.log(insert_seq);
 
   res.send({
     code: "success",
@@ -325,10 +334,60 @@ app.post("/answer", async (req, res) => {
       result.message = "문제가 존재하지 않습니다";
       break;
     }
-    if (exam_row.answer != answer) {
-      result.code = "error";
-      result.message = "오답입니다";
-      break;
+
+    const 시험케이스배열 = JSON.parse(exam_row.answer).map((item) => {
+      return item.answer;
+    });
+
+    console.log("======== ANSWER ==========");
+
+    console.log("시험정답 케이스 배열", 시험케이스배열);
+    console.log("회원 코드 실행 배열", answer);
+
+    const 기본케이스배열 = answer?.기본케이스;
+    const 유저케이스배열 = answer?.유저케이스;
+
+    const 다중배열 = Array.isArray(시험케이스배열[0]);
+
+    /**
+     * 1. 유저가 구현한 값이 기본케이스에 없다면 실패
+     * 2. 시험케이스배열과 기본케이스배열이 갖지 않다면 실패
+     */
+
+    switch (다중배열) {
+      case true:
+        console.log("=========== 다중배열 문제 ============");
+
+        let 회원알고리즘맞음 = false;
+
+        시험케이스배열.forEach((item) => {
+          if (JSON.stringify(item) === JSON.stringify(유저케이스배열)) {
+            회원알고리즘맞음 = true;
+          }
+        });
+
+        if (
+          회원알고리즘맞음 === false ||
+          JSON.stringify(시험케이스배열) != JSON.stringify(기본케이스배열)
+        ) {
+          result.code = "error";
+          result.message = "오답입니다";
+        }
+
+        break;
+
+      default:
+        console.log("=========== 디폴트 문제 ============");
+
+        if (
+          기본케이스배열?.includes(유저케이스배열) === false ||
+          JSON.stringify(시험케이스배열) != JSON.stringify(기본케이스배열)
+        ) {
+          result.code = "error";
+          result.message = "오답입니다";
+        }
+
+        break;
     }
 
     const last_exam_row = await Model.excute({
