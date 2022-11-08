@@ -514,36 +514,6 @@ app.get("/exam-result", async (req, res) => {
   res.send(exam_result_all);
 });
 
-app.post("/exam-result", async (req, res) => {
-  const { loginUser } = req.params;
-  const { seq, updateData } = req.body;
-
-  const now_date = get_now_date();
-
-  updateData.reg_date = now_date;
-  updateData.edit_date = now_date;
-
-  const duplicate_sql = Model.getDuplicateQuery({
-    table: "exam_result",
-    insertData: {
-      ...updateData,
-      user_seq: 1,
-      exam_seq: seq,
-    },
-    updateData: updateData,
-  });
-
-  // await Model.excute({
-  //   database: "code_exam",
-  //   sql: duplicate_sql,
-  //   type: "exec",
-  // });
-
-  res.send({
-    code: "success",
-  });
-});
-
 // ========================== 키보드 마우스 후킹 시작 ================================
 
 app.get("/hook", (req, res) => {
