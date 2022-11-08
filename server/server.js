@@ -329,6 +329,25 @@ app.post("/answer", async (req, res) => {
       break;
     }
 
+    const 사용자답변코드 = code.replaceAll("'", '"');
+
+    const exam_result_duplicate_sql = Model.getDuplicateQuery({
+      table: "exam_result",
+      insertData: {
+        result_body: 사용자답변코드,
+        user_seq: loginUser.seq,
+        exam_seq: seq,
+        reg_date: now_date,
+        edit_date: now_date,
+      },
+      updateData: {
+        result_body: 사용자답변코드,
+        edit_date: now_date,
+      },
+    });
+
+    console.log(exam_result_duplicate_sql);
+
     if (exam_row.answer != answer) {
       result.code = "error";
       result.message = "오답입니다";
@@ -365,23 +384,6 @@ app.post("/answer", async (req, res) => {
         sql: update_sql,
         type: "exec",
       });
-
-      [good, time, studen];
-
-      // const exam_result_duplicate_sql = Model.getDuplicateQuery({
-      //   table: "exam",
-      //   insertData: {
-      //     body: code,
-      //     user_seq: loginUser.seq,
-      //     exam_seq: seq,
-      //     reg_date: now_date,
-      //     edit_date: now_date,
-      //   },
-      //   updateData: {
-      //     result_body: code,
-      //     edit_date: now_date,
-      //   },
-      // });
 
       // await Model.excute({
       //   database: "code_exam",

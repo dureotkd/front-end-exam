@@ -16,7 +16,7 @@ class Core {
     const c = column.join(",");
     const v = values.join("','");
 
-    return `INSERT INTO ${table}(${c}) VALUES ('${v}')`;
+    return `INSERT INTO ${table}(${c}) VALUES ('${v}');`;
   }
 
   /**
@@ -32,7 +32,7 @@ class Core {
     const rc = c.slice(0, -1);
     const rw = where.join(" AND ");
 
-    return `UPDATE ${table} SET ${rc} WHERE ${rw}`;
+    return `UPDATE ${table} SET ${rc} WHERE ${rw};`;
   }
 
   getDuplicateQuery({ table, insertData, updateData }) {
@@ -47,16 +47,14 @@ class Core {
 
     let update = "";
 
-    let len = 1;
-
     for (const [column, value] of Object.entries(updateData)) {
-      const last_str = updateData.length === len ? ";" : ",";
-      update += `${column}='${value}'${last_str}`;
-
-      len++;
+      update += `${column}='${value}',`;
     }
 
-    return `INSERT INTO ${table} (${c}) VALUES (${v}) ON DUPLICATE KEY UPDATE ${update}`;
+    return `INSERT INTO ${table} (${c}) VALUES ('${v}') ON DUPLICATE KEY UPDATE ${update.slice(
+      0,
+      -1
+    )};`;
   }
 
   /**
