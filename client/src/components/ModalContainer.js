@@ -4,8 +4,6 @@ import InputLabel from "./InputLabel";
 
 import { BsCheckLg } from "react-icons/bs";
 
-import { useParams } from "react-router-dom";
-
 import ajax from "../apis/ajax";
 
 function Problem() {
@@ -98,8 +96,7 @@ function QuestionForm() {
       label: "내용",
       name: "body",
       value: "",
-      placeholder:
-        "문제와 관련된 질문을 구체적으로 작성해 주세요. \n타인에 대한 비방이나 욕설, 광고, 정답 공개 등 게시판의 목적과 관련 없는 내용은 삭제될 수 있습니다.",
+      placeholder: "문제와 관련된 질문을 구체적으로 작성해 주세요.",
     },
   ]);
 
@@ -253,6 +250,8 @@ function ModalContainer({
   showModal: { show, code, component },
   setShowModal,
 }) {
+  const Component = component;
+
   React.useEffect(() => {
     const 바디클릭 = (event) => {
       if (show === false) {
@@ -302,7 +301,7 @@ function ModalContainer({
               }
         }
       >
-        {component && component()}
+        {Component && <Component />}
         {
           {
             QUESTION: <QuestionForm />,

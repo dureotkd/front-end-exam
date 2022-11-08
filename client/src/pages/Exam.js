@@ -9,7 +9,6 @@ import { UserContext } from "../App";
 import ajax from "../apis/ajax";
 
 import {
-  AnswerSuccess,
   CodeMirror,
   ExecuteButton,
   Header,
@@ -17,6 +16,7 @@ import {
 } from "../components/index";
 
 const 에러로그보여줘 = (error) => {
+  이전로그다지워();
   const my_log = document.getElementById("my_log");
   const div_log = document.createElement("pre");
   div_log.classList = "log-msg";
@@ -99,29 +99,34 @@ function Exam() {
     setCode(value);
   }, []);
   const 코드실행 = React.useCallback(
-    (value = "") => {
+    (value = null) => {
       이전로그다지워();
 
       const 콘솔프로토타입상속 = `
 
       const c = window.console;
 
+      function 로그HTML화면으로보여줘(s) {
+        const my_log = document.getElementById("my_log");
+        const div_log = document.createElement("pre");
+        div_log.classList = "log-msg";
+        div_log.innerText = JSON.stringify(s, undefined, 2);
+        my_log.append(div_log);
+        c.log(s);
+      }
+
       const Console = function () {};
       const ConsoleObject = {
         log(s) {
-          const my_log = document.getElementById("my_log");
-          const div_log = document.createElement("pre");
-          div_log.classList = "log-msg";
-          div_log.innerText = JSON.stringify(s, undefined, 2);
-          my_log.append(div_log);
-          c.log(s);
+          로그HTML화면으로보여줘(s);
         },
       };
       Console.prototype.__proto__ = ConsoleObject;
-      const console = new Console();
+      let console = new Console();
 
-      if (${value} !== '') {
+      if (${value}) {
         console.log(${value});
+        console = c;
       }
 
     `;
@@ -146,7 +151,6 @@ function Exam() {
         // F9 (코드실행)
 
         case 120:
-        case 17:
           코드실행();
           break;
 
@@ -197,7 +201,7 @@ function Exam() {
     };
   }, [timer]);
 
-  const 답제출 = React.useCallback(async () => {
+  const 제출하기 = React.useCallback(async () => {
     let 즉시실행함수로묶기 = ` 
       return () => {
         ${code}
@@ -226,7 +230,51 @@ function Exam() {
         if (code === "success") {
           setShowModal({
             show: true,
-            component: <AnswerSuccess seq={seq} last_yn={last_yn} />,
+            component: () => {
+              return (
+                <div
+                  className="modal-children-box"
+                  style={{
+                    minHeight: 280,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <h2>정답입니다</h2>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <button
+                      className="exam-btn"
+                      style={{ marginRight: 12 }}
+                      onClick={() => {
+                        setShowModal({
+                          show: null,
+                          component: null,
+                        });
+                      }}
+                    >
+                      머무르기
+                    </button>
+                    {last_yn === "N" && (
+                      <button
+                        className="exam-btn"
+                        style={{ backgroundColor: "#2146c7" }}
+                        onClick={() => {
+                          window.location.href = `/exam/${parseInt(seq) + 1}`;
+                        }}
+                      >
+                        다음 문제로 이동
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            },
           });
         }
       });
@@ -325,7 +373,7 @@ function Exam() {
           <ExecuteButton text="코드실행" onClick={코드실행} />
           <ExecuteButton
             text="제출하기"
-            onClick={답제출}
+            onClick={제출하기}
             style={{ marginLeft: 12, backgroundColor: "#2146c7" }}
           />
         </div>

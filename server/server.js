@@ -423,7 +423,7 @@ app.post("/answer", async (req, res) => {
 });
 
 app.post("/question", upload.array("files"), async (req, res) => {
-  const { title, body } = req.body;
+  const { title, body } = replaceAllObject(req.body, "'", '"');
   const files = req?.files || [];
 
   const loginUser = req.session.loginUser;
@@ -605,3 +605,15 @@ var empty = function (value) {
     return false;
   }
 };
+
+function replaceAllObject(obj, replace, str) {
+  let res = {};
+
+  for (let key in obj) {
+    const x = obj[key];
+    const r = x.replaceAll(replace, str);
+    res[key] = r;
+  }
+
+  return res;
+}
