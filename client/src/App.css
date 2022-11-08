@@ -210,6 +210,9 @@ pre {
   border: 1px solid #eee;
   padding: 12px;
   transition: all.7s;
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .modal-bg {

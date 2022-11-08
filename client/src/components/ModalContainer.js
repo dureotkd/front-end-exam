@@ -40,22 +40,28 @@ function AnotherPeopleAnswer() {
   }
 
   return (
-    <div>
-      {data &&
-        data.map((item) => {
-          console.log(data);
-
-          return (
-            <div className="exam_result_code_wrap" key={item.seq}>
-              <CodeMirror
-                theme="light"
-                value={item.result_body}
-                options={{ readOnly: true }}
-              />
-            </div>
-          );
-        })}
-    </div>
+    <table style={{ width: "100%" }}>
+      <tbody>
+        {data &&
+          data.map((item) => {
+            return (
+              <tr>
+                <td>
+                  <div key={item.seq} className="another_exam_result_wrap">
+                    <div className="exam_result_code_wrap" key={item.seq}>
+                      <CodeMirror
+                        height="700px"
+                        value={item.result_body}
+                        options={{ readOnly: true }}
+                      />
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
+      </tbody>
+    </table>
   );
 }
 
@@ -347,7 +353,7 @@ function ModalContainer({
         style={
           show
             ? {
-                top: "10%",
+                top: "5%",
               }
             : {
                 top: "-100%",

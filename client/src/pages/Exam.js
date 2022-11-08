@@ -209,11 +209,11 @@ function Exam() {
       }
     `;
 
-    // eslint-disable-next-line no-new-func
-    let 가상머신함수 = new Function(즉시실행함수로묶기);
     let 유저의답 = "";
 
     try {
+      // eslint-disable-next-line no-new-func
+      let 가상머신함수 = new Function(즉시실행함수로묶기);
       유저의답 = 가상머신함수()();
       코드실행(유저의답);
     } catch (error) {
@@ -287,7 +287,7 @@ function Exam() {
     });
   }, [setShowModal]);
 
-  const 다른사람들의답 = React.useCallback(() => {
+  const 정답보기 = React.useCallback(() => {
     if (!window.confirm("답을 확인하시겠습니까?")) {
       return;
     }
@@ -390,7 +390,7 @@ function Exam() {
           질문하기
         </button>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <ExecuteButton text="다른 사람들의 답" onClick={다른사람들의답} />
+          <ExecuteButton text="정답보기" onClick={정답보기} />
           <ExecuteButton
             text="코드실행"
             onClick={코드실행}

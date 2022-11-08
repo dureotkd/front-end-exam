@@ -328,7 +328,6 @@ app.post("/answer", async (req, res) => {
       result.message = "문제가 존재하지 않습니다";
       break;
     }
-
     if (exam_row.answer != answer) {
       result.code = "error";
       result.message = "오답입니다";
@@ -508,7 +507,7 @@ app.post("/question", upload.array("files"), async (req, res) => {
 
 app.get("/exam-result", async (req, res) => {
   const { seq } = req.query;
-  const sql = `SELECT * FROM exam_result a WHERE a.exam_seq = '${seq}'`;
+  const sql = `SELECT * FROM exam_result a,user b WHERE a.user_seq = b.seq AND a.exam_seq = '${seq}' LIMIT 1`;
 
   const exam_result_all = await Model.excute({
     sql: sql,
@@ -536,8 +535,6 @@ app.post("/exam-result", async (req, res) => {
     },
     updateData: updateData,
   });
-
-  console.log(duplicate_sql);
 
   // await Model.excute({
   //   database: "code_exam",
