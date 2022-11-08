@@ -3,12 +3,13 @@ import React from "react";
 import { Viewer } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { UserContext } from "../App";
 
 import ajax from "../apis/ajax";
 
 import {
+  AnswerSuccess,
   CodeMirror,
   ExecuteButton,
   Header,
@@ -32,7 +33,6 @@ const 이전로그다지워 = () => {
 };
 
 function Exam() {
-  const navigation = useNavigate;
   const { seq } = useParams();
   const { setShowModal } = React.useContext(UserContext);
 
@@ -226,67 +226,16 @@ function Exam() {
         if (code === "success") {
           setShowModal({
             show: true,
-            component: () => {
-              return (
-                <div
-                  className="modal-children-box"
-                  style={{
-                    minHeight: 280,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <h2>정답입니다</h2>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <button
-                      className="exam-btn"
-                      style={{ marginRight: 12 }}
-                      onClick={() => {
-                        setShowModal({
-                          show: null,
-                          component: null,
-                        });
-                      }}
-                    >
-                      머무르기
-                    </button>
-                    {last_yn === "N" && (
-                      <button
-                        className="exam-btn"
-                        style={{ backgroundColor: "#2146c7" }}
-                        onClick={() => {
-                          window.location.href = `/exam/${parseInt(seq) + 1}`;
-                        }}
-                      >
-                        다음 문제로 이동
-                      </button>
-                    )}
-                  </div>
-                </div>
-              );
-            },
+            component: <AnswerSuccess seq={seq} last_yn={last_yn} />,
           });
         }
       });
-  }, [code, seq, setShowModal]);
+  }, [code, seq, setShowModal, 코드실행]);
 
   const 질문하기 = React.useCallback(() => {
     setShowModal({
       show: true,
       code: "QUESTION",
-    });
-  }, [setShowModal]);
-
-  const 단축키알려줄게 = React.useCallback(() => {
-    setShowModal({
-      show: true,
-      component: null,
     });
   }, [setShowModal]);
 

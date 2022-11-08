@@ -4,6 +4,7 @@ import CodeMirror from "./CodeMirror";
 import ModalContainer from "./ModalContainer";
 import ExecuteButton from "./ExecuteButton";
 import Horizontal from "./Horizontal";
+import AnswerSuccess from "./AnswerSuccess";
 import Header from "./Header";
 
 export {
@@ -12,6 +13,7 @@ export {
   AuthLayout,
   InputLabel,
   CodeMirror,
+  AnswerSuccess,
   ModalContainer,
   ExecuteButton,
 };
