@@ -287,12 +287,29 @@ function Exam() {
     });
   }, [setShowModal]);
 
+  const 다른사람들의답 = React.useCallback(() => {
+    if (!window.confirm("답을 확인하시겠습니까?")) {
+      return;
+    }
+
+    setShowModal({
+      show: true,
+      code: "ANOTHER_PEOPLE_ANSWER",
+    });
+  }, [setShowModal]);
+
   if (loading === true) {
     return <div>;;</div>;
   }
 
   return (
-    <div style={{ backgroundColor: "#263747", height: "100vh" }}>
+    <div
+      style={{
+        overflow: "hidden",
+        backgroundColor: "#263747",
+        height: "100vh",
+      }}
+    >
       <Header navigation="Javascript > 알고리즘 문제" />
       <div
         style={{
@@ -373,7 +390,12 @@ function Exam() {
           질문하기
         </button>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <ExecuteButton text="코드실행" onClick={코드실행} />
+          <ExecuteButton text="다른 사람들의 답" onClick={다른사람들의답} />
+          <ExecuteButton
+            text="코드실행"
+            onClick={코드실행}
+            style={{ marginLeft: 12 }}
+          />
           <ExecuteButton
             text="제출하기"
             onClick={제출하기}

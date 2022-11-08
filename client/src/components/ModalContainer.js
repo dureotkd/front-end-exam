@@ -1,10 +1,63 @@
 import React from "react";
-import { empty } from "../helpers";
-import InputLabel from "./InputLabel";
 
 import { BsCheckLg } from "react-icons/bs";
 
 import ajax from "../apis/ajax";
+import { empty } from "../helpers";
+import { InputLabel, CodeMirror } from "../components/index";
+
+function AnotherPeopleAnswer() {
+  const pathname = window.location.pathname.split("/");
+  const seq = pathname[pathname.length - 1];
+
+  const [loading, setLoading] = React.useState(true);
+  const [data, setData] = React.useState([]);
+
+  React.useEffect(() => {
+    (async () => {
+      await ajax
+        .get("/exam-result", {
+          params: {
+            seq: seq,
+          },
+        })
+        .then(({ status, data }) => {
+          if (status === 200) {
+            setData(data);
+          }
+        });
+
+      setLoading(false);
+    })();
+  }, [seq]);
+
+  if (loading) {
+    return <div>Loading중</div>;
+  }
+
+  if (empty(data)) {
+    return <div>답없어</div>;
+  }
+
+  return (
+    <div>
+      {data &&
+        data.map((item) => {
+          console.log(data);
+
+          return (
+            <div className="exam_result_code_wrap" key={item.seq}>
+              <CodeMirror
+                theme="light"
+                value={item.result_body}
+                options={{ readOnly: true }}
+              />
+            </div>
+          );
+        })}
+    </div>
+  );
+}
 
 function Problem() {
   const pathname = window.location.pathname.split("/");
@@ -258,7 +311,7 @@ function ModalContainer({
         return;
       }
 
-      if (event.target.className === "modal-bg") {
+      if (event?.target?.className === "modal-bg") {
         setShowModal({
           show: false,
           component: null,
@@ -306,6 +359,7 @@ function ModalContainer({
           {
             QUESTION: <QuestionForm />,
             PROBLEM: <Problem />,
+            ANOTHER_PEOPLE_ANSWER: <AnotherPeopleAnswer />,
             ALARM: <Alarm />,
             MYPAGE: <MyPage />,
           }[code]

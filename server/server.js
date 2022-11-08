@@ -329,25 +329,6 @@ app.post("/answer", async (req, res) => {
       break;
     }
 
-    const 사용자답변코드 = code.replaceAll("'", '"');
-
-    const exam_result_duplicate_sql = Model.getDuplicateQuery({
-      table: "exam_result",
-      insertData: {
-        result_body: 사용자답변코드,
-        user_seq: loginUser.seq,
-        exam_seq: seq,
-        reg_date: now_date,
-        edit_date: now_date,
-      },
-      updateData: {
-        result_body: 사용자답변코드,
-        edit_date: now_date,
-      },
-    });
-
-    console.log(exam_result_duplicate_sql);
-
     if (exam_row.answer != answer) {
       result.code = "error";
       result.message = "오답입니다";
@@ -385,11 +366,26 @@ app.post("/answer", async (req, res) => {
         type: "exec",
       });
 
-      // await Model.excute({
-      //   database: "code_exam",
-      //   sql: exam_result_duplicate_sql,
-      //   type: "exec",
-      // });
+      const 사용자답변코드 = code.replaceAll("'", '"');
+      const exam_result_duplicate_sql = Model.getDuplicateQuery({
+        table: "exam_result",
+        insertData: {
+          result_body: 사용자답변코드,
+          user_seq: loginUser.seq,
+          exam_seq: seq,
+          reg_date: now_date,
+          edit_date: now_date,
+        },
+        updateData: {
+          result_body: 사용자답변코드,
+          edit_date: now_date,
+        },
+      });
+
+      await Model.excute({
+        sql: exam_result_duplicate_sql,
+        type: "exec",
+      });
 
       // ========================== 성공 처리 ==========================
 
@@ -509,6 +505,18 @@ app.post("/question", upload.array("files"), async (req, res) => {
 });
 
 // ========================== exam_result ==========================
+
+app.get("/exam-result", async (req, res) => {
+  const { seq } = req.query;
+  const sql = `SELECT * FROM exam_result a WHERE a.exam_seq = '${seq}'`;
+
+  const exam_result_all = await Model.excute({
+    sql: sql,
+    type: "all",
+  });
+
+  res.send(exam_result_all);
+});
 
 app.post("/exam-result", async (req, res) => {
   const { loginUser } = req.params;
