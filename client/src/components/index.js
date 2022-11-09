@@ -5,6 +5,7 @@ import ModalContainer from "./ModalContainer";
 import ExecuteButton from "./ExecuteButton";
 import Horizontal from "./Horizontal";
 import AnswerSuccess from "./AnswerSuccess";
+import PageLoading from "./PageLoading";
 import Header from "./Header";
 
 export {
@@ -16,4 +17,5 @@ export {
   AnswerSuccess,
   ModalContainer,
   ExecuteButton,
+  PageLoading,
 };

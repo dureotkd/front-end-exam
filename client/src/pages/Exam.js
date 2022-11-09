@@ -13,6 +13,7 @@ import {
   ExecuteButton,
   Header,
   Horizontal,
+  PageLoading,
 } from "../components/index";
 
 const 에러로그보여줘 = (error) => {
@@ -36,12 +37,11 @@ function Exam() {
   const { seq } = useParams();
   const { setShowModal } = React.useContext(UserContext);
 
+  const [loading, setLoading] = React.useState(true);
   const [exam, setExam] = React.useState(null);
   const [code, setCode] = React.useState(
     "function solution(입력) { \n\n}\n\n\n\nconst 입력 = '';\nsolution(입력);"
   );
-
-  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     (async () => {
@@ -290,7 +290,7 @@ function Exam() {
   }, [setShowModal]);
 
   if (loading === true) {
-    return <div>;;</div>;
+    return <PageLoading />;
   }
 
   return (

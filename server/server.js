@@ -479,8 +479,35 @@ app.post("/answer", async (req, res) => {
   res.send(result);
 });
 
+app.get("/question", async (req, res) => {
+  const { exam_seq } = req.query;
+
+  const question_sql = `SELECT *, (SELECT name FROM user WHERE a.user_seq = seq LIMIT 1) as user_name FROM question a`;
+  const question_all = await Model.excute({ sql: question_sql, type: "all" });
+
+  const question_all_data = [];
+
+  if (!empty(question_all)) {
+    for (let key in question_all) {
+      const row = question_all[key];
+
+      const file_all = await Model.excute({
+        sql: `SELECT * FROM file WHERE target_seq = ${row.seq} AND target_table = 'question'`,
+        type: "all",
+      });
+
+      row.files = file_all;
+      question_all_data.push(row);
+    }
+  }
+
+  console.log(question_all_data);
+
+  res.send(question_all_data);
+});
+
 app.post("/question", upload.array("files"), async (req, res) => {
-  const { title, body } = replaceAllObject(req.body, "'", '"');
+  const { exam_seq, title, body } = replaceAllObject(req.body, "'", '"');
   const files = req?.files || [];
 
   const loginUser = req.session.loginUser;
@@ -491,9 +518,9 @@ app.post("/question", upload.array("files"), async (req, res) => {
   };
 
   for (let {} in [1]) {
-    if (empty(loginUser)) {
+    if (empty(exam_seq)) {
       result.code = "error";
-      result.message = "로그인 후 이용해주세요";
+      result.message = "시험정보 부족";
       break;
     }
 
@@ -515,11 +542,12 @@ app.post("/question", upload.array("files"), async (req, res) => {
   }
   const now_date = get_now_date();
 
-  const answer_sql = Model.getInsertQuery({
-    table: "answer",
+  const question_sql = Model.getInsertQuery({
+    table: "question",
     data: {
       title: title,
       body: body,
+      exam_seq: exam_seq,
       user_seq: loginUser.seq,
       reg_date: now_date,
       edit_date: now_date,
@@ -527,7 +555,7 @@ app.post("/question", upload.array("files"), async (req, res) => {
   });
 
   const anser_insert_seq = await Model.excute({
-    sql: answer_sql,
+    sql: question_sql,
     type: "exec",
   });
 
@@ -544,7 +572,7 @@ app.post("/question", upload.array("files"), async (req, res) => {
           path: path,
           mime: mimetype,
           byte: size,
-          target_table: "answer",
+          target_table: "question",
           target_seq: anser_insert_seq,
           reg_date: now_date,
           edit_date: now_date,
@@ -586,7 +614,7 @@ app.get("/hook", (req, res) => {
 // ========================== exam_result ==========================
 
 app.listen(port, () => {
-  const dir = "../client/uploads";
+  const dir = "../client/public/uploads";
 
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);

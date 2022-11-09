@@ -63,7 +63,7 @@ function Header({ navigation }) {
         <div className="navigation-ui">
           <h3 onClick={모달컨트롤.bind(this, "ALARM")}>알림</h3>
           <h3 onClick={모달컨트롤.bind(this, "PROBLEM")}>문제</h3>
-          <h3 onClick={모달컨트롤.bind(this, "MYPAGE")}>마이페이지</h3>
+          <h3 onClick={모달컨트롤.bind(this, "MYQUESTION")}>나의질문</h3>
           <h3 className="red" onClick={로그아웃}>
             로그아웃
           </h3>

@@ -144,6 +144,9 @@ function Problem() {
 }
 
 function QuestionForm() {
+  const pathname = window.location.pathname.split("/");
+  const seq = pathname[pathname.length - 1];
+
   const [inputs, setInputs] = React.useState([
     {
       label: "제목",
@@ -206,6 +209,8 @@ function QuestionForm() {
   const 질문제출 = React.useCallback(async () => {
     const form = new FormData();
 
+    form.append("exam_seq", seq);
+
     if (!empty(inputs)) {
       inputs.forEach(({ name, value }) => {
         form.append(name, value);
@@ -221,7 +226,7 @@ function QuestionForm() {
     await ajax.post("/question", form, {
       "Content-Type": "multipart/form-data",
     });
-  }, [files, inputs]);
+  }, [files, inputs, seq]);
 
   return (
     <div className="modal-children-box">
@@ -297,10 +302,10 @@ function Alarm() {
   );
 }
 
-function MyPage() {
+function MyQuestion() {
   return (
     <div className="modal-children-box">
-      <h2>마이페이지</h2>
+      <h2>나의질문</h2>
     </div>
   );
 }
@@ -367,7 +372,7 @@ function ModalContainer({
             PROBLEM: <Problem />,
             ANOTHER_PEOPLE_ANSWER: <AnotherPeopleAnswer />,
             ALARM: <Alarm />,
-            MYPAGE: <MyPage />,
+            MYQUESTION: <MyQuestion />,
           }[code]
         }
       </div>
