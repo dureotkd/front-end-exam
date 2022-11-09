@@ -353,7 +353,6 @@ app.post("/answer", async (req, res) => {
      * 1. 유저가 구현한 값이 기본케이스에 없다면 실패
      * 2. 시험케이스배열과 기본케이스배열이 갖지 않다면 실패
      */
-
     switch (다중배열) {
       case true:
         console.log("=========== 다중배열 문제 ============");
@@ -390,6 +389,31 @@ app.post("/answer", async (req, res) => {
         break;
     }
 
+    if (result.code === "error") {
+      break;
+    }
+
+    const 사용자답변코드 = code.replaceAll("'", '"');
+    const exam_result_duplicate_sql = Model.getDuplicateQuery({
+      table: "exam_result",
+      insertData: {
+        result_body: 사용자답변코드,
+        user_seq: loginUser.seq,
+        exam_seq: seq,
+        reg_date: now_date,
+        edit_date: now_date,
+      },
+      updateData: {
+        result_body: 사용자답변코드,
+        edit_date: now_date,
+      },
+    });
+
+    await Model.excute({
+      sql: exam_result_duplicate_sql,
+      type: "exec",
+    });
+
     const last_exam_row = await Model.excute({
       database: "code_exam",
       sql: `SELECT * FROM code_exam.exam ORDER BY reg_date DESC LIMIT 1`,
@@ -397,7 +421,6 @@ app.post("/answer", async (req, res) => {
     });
 
     result.last_yn = last_exam_row.seq == seq ? "Y" : "N";
-
     const success_user_ids = exam_row?.success_user_ids || "";
 
     /**
@@ -418,27 +441,6 @@ app.post("/answer", async (req, res) => {
       await Model.excute({
         database: "code_exam",
         sql: update_sql,
-        type: "exec",
-      });
-
-      const 사용자답변코드 = code.replaceAll("'", '"');
-      const exam_result_duplicate_sql = Model.getDuplicateQuery({
-        table: "exam_result",
-        insertData: {
-          result_body: 사용자답변코드,
-          user_seq: loginUser.seq,
-          exam_seq: seq,
-          reg_date: now_date,
-          edit_date: now_date,
-        },
-        updateData: {
-          result_body: 사용자답변코드,
-          edit_date: now_date,
-        },
-      });
-
-      await Model.excute({
-        sql: exam_result_duplicate_sql,
         type: "exec",
       });
 

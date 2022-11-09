@@ -170,18 +170,6 @@ function Exam() {
   }, [timer]);
 
   const 제출하기 = React.useCallback(async () => {
-    // 5 , 2
-    const 입력_array = [
-      {
-        input: [6, 5, 11],
-        answer: 5,
-      },
-      {
-        input: [10, 8, 2],
-        answer: 2,
-      },
-    ];
-
     const 시험케이스배열 = JSON.parse(exam.answer);
 
     let 즉시실행함수로묶기 = ` 
