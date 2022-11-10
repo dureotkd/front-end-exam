@@ -68,10 +68,8 @@ function Exam() {
     setCode(value);
   }, []);
   const 코드실행 = React.useCallback(
-    (value = null) => {
+    (value = "이건아무도디폴트로설정안할걸??????@!@#@#@#(@#(@#@#(") => {
       이전로그다지워();
-
-      console.log(typeof value);
 
       const 콘솔프로토타입상속 = `
 
@@ -95,7 +93,7 @@ function Exam() {
       Console.prototype.__proto__ = ConsoleObject;
       let console = new Console();
 
-      if (${value}) {
+      if ('${value}' != '이건아무도디폴트로설정안할걸??????@!@#@#@#(@#(@#@#(' ) {
         const 밸류 = JSON.parse('${JSON.stringify(value)}');
         console.log(밸류);
         console = c;

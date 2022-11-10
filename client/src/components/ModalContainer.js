@@ -37,7 +37,19 @@ function AnotherPeopleAnswer() {
   }
 
   if (empty(data)) {
-    return <div>답없어</div>;
+    return (
+      <div
+        style={{
+          position: "absolute",
+          top: "42%",
+          display: "flex",
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
+        <h2>답이 없습니다</h2>
+      </div>
+    );
   }
 
   return (
@@ -46,9 +58,9 @@ function AnotherPeopleAnswer() {
         {data &&
           data.map((item) => {
             return (
-              <tr>
+              <tr key={item.seq} className="another_exam_result_wrap">
                 <td>
-                  <div key={item.seq} className="another_exam_result_wrap">
+                  <div>
                     <div className="exam_result_code_wrap" key={item.seq}>
                       <CodeMirror
                         height="700px"
