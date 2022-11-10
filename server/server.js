@@ -88,15 +88,14 @@ io.on("connection", (socket) => {
     console.log(socketDB);
   });
 
-  socket.on("질문답변", (user_seq) => {
+  socket.on("질문답변", ({ user_seq, body }) => {
     if (!empty(socketDB.room)) {
       for (let 소켓아이디 in socketDB.room) {
-        const 특정소켓아이디 = socketDB.room[소켓아이디];
+        const 특정회원번호 = socketDB.room[소켓아이디];
 
-        if (특정소켓아이디 == user_seq) {
-          io.to(특정소켓아이디).emit("질문답변", {
-            body: "안녕하세요 답변이에요~",
-          });
+        if (특정회원번호 == user_seq) {
+          console.log(소켓아이디, "가야되는데..?");
+          io.to(소켓아이디).emit("질문답변", body[user_seq]);
         }
       }
     }
@@ -532,9 +531,7 @@ app.post("/answer", async (req, res) => {
 });
 
 app.get("/question", async (req, res) => {
-  const { exam_seq } = req.query;
-
-  const question_sql = `SELECT *, (SELECT name FROM user WHERE a.user_seq = seq LIMIT 1) as user_name FROM question a`;
+  const question_sql = `SELECT *, (SELECT name FROM user WHERE a.user_seq = seq LIMIT 1) as user_name,(SELECT title FROM exam WHERE a.exam_seq = seq LIMIT 1) as exam_title FROM question a`;
   const question_all = await Model.excute({ sql: question_sql, type: "all" });
 
   const question_all_data = [];

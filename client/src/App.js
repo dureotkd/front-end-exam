@@ -10,6 +10,7 @@ import { ToastContainer } from "react-toastify";
 import ajax from "./apis/ajax";
 import { ModalContainer } from "./components";
 import { io } from "socket.io-client";
+import { empty } from "./helpers";
 
 export const UserContext = React.createContext({});
 
@@ -35,7 +36,6 @@ function App() {
 
         if (code === "success") {
           const socket = io("http://localhost:4000");
-          console.log(socket);
           socket.emit("클라이언트방에넣기", user);
           setSocketObj(socket);
           setLoginUser(user);
@@ -44,6 +44,41 @@ function App() {
     })();
   }, []);
 
+  const [alarmData, setAlarmData] = React.useState({
+    isAlaram: false,
+    data: [],
+  });
+  React.useEffect(() => {
+    if (empty(socketObj)) {
+      return;
+    }
+
+    socketObj.on("질문답변", async ({ body, item }) => {
+      const cloneAlarmData = { ...alarmData };
+      cloneAlarmData.isAlaram = true;
+      cloneAlarmData.data.push({
+        body: body,
+        item: item,
+      });
+      setAlarmData(cloneAlarmData);
+
+      setTimeout(() => {
+        setAlarmData((prev) => {
+          prev.isAlaram = false;
+          return {
+            ...prev,
+          };
+        });
+
+        // const cloneAlarmData = { ...alarmData };
+        // cloneAlarmData.isAlaram = false;
+        // setAlarmData(cloneAlarmData);
+      }, 5000);
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socketObj]);
+
   return (
     <React.Fragment>
       <UserContext.Provider
@@ -51,12 +86,14 @@ function App() {
           loginUser,
           setShowModal,
           socketObj,
+          alarmData,
+          setAlarmData,
         }}
       >
         <AppIndex />
+        <ModalContainer showModal={showModal} />
       </UserContext.Provider>
       <ToastContainer />
-      <ModalContainer showModal={showModal} setShowModal={setShowModal} />
     </React.Fragment>
   );
 }

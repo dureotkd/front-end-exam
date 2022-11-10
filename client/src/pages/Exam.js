@@ -269,7 +269,7 @@ function Exam() {
           });
         }
       });
-  }, [code, seq, setShowModal, 코드실행]);
+  }, [code, exam?.answer, seq, setShowModal, 코드실행]);
 
   const 질문하기 = React.useCallback(() => {
     setShowModal({

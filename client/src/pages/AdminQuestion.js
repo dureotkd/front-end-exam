@@ -10,6 +10,8 @@ function AdminQuestion() {
 
   const [data, setData] = React.useState([]);
 
+  const [body, setBody] = React.useState({});
+
   React.useEffect(() => {
     (async () => {
       await ajax
@@ -24,11 +26,27 @@ function AdminQuestion() {
     })();
   }, [seq, socketObj]);
 
+  const 답변값저장 = React.useCallback(
+    (item, { target: { value } }) => {
+      const cloneBody = { ...body };
+
+      cloneBody[item.user_seq] = {
+        item: item,
+        body: value,
+      };
+      setBody(cloneBody);
+    },
+    [body]
+  );
+
   const 답변보내기 = React.useCallback(
     async (user_seq) => {
-      socketObj.emit("질문답변", user_seq);
+      socketObj.emit("질문답변", {
+        user_seq: user_seq,
+        body: body,
+      });
     },
-    [socketObj]
+    [body, socketObj]
   );
 
   return (
@@ -70,6 +88,7 @@ function AdminQuestion() {
                     </td>
                     <td data-label="답변">
                       <textarea
+                        onChange={답변값저장.bind(this, item)}
                         placeholder="답변을 적어주세요"
                         cols="50"
                         rows="15"
