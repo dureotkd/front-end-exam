@@ -9,10 +9,12 @@ import { ToastContainer } from "react-toastify";
 
 import ajax from "./apis/ajax";
 import { ModalContainer } from "./components";
+import { io } from "socket.io-client";
 
 export const UserContext = React.createContext({});
 
 function App() {
+  const [socketObj, setSocketObj] = React.useState({});
   const [loginUser, setLoginUser] = React.useState({});
   const [showModal, setShowModal] = React.useState({
     show: false, // 모달 보여주는거 정의
@@ -32,6 +34,10 @@ function App() {
         }
 
         if (code === "success") {
+          const socket = io("http://localhost:4000");
+          console.log(socket);
+          socket.emit("클라이언트방에넣기", user);
+          setSocketObj(socket);
           setLoginUser(user);
         }
       });
@@ -44,6 +50,7 @@ function App() {
         value={{
           loginUser,
           setShowModal,
+          socketObj,
         }}
       >
         <AppIndex />

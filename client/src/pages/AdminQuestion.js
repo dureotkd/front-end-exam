@@ -1,7 +1,10 @@
 import React from "react";
 import ajax from "../apis/ajax";
+import { UserContext } from "../App";
 import { empty } from "../helpers";
 function AdminQuestion() {
+  const { socketObj } = React.useContext(UserContext);
+
   const pathname = window.location.pathname.split("/");
   const seq = pathname[pathname.length - 1];
 
@@ -16,11 +19,17 @@ function AdminQuestion() {
           },
         })
         .then(({ data }) => {
-          console.log(data);
           setData(data);
         });
     })();
-  }, [seq]);
+  }, [seq, socketObj]);
+
+  const 답변보내기 = React.useCallback(
+    async (user_seq) => {
+      socketObj.emit("질문답변", user_seq);
+    },
+    [socketObj]
+  );
 
   return (
     <div style={{ padding: 30 }}>
@@ -39,7 +48,6 @@ function AdminQuestion() {
         <tbody>
           {!empty(data)
             ? data.map((item, index) => {
-                console.log(item.files);
                 return (
                   <tr key={item.seq}>
                     <td data-label="번호">{index}</td>
@@ -49,17 +57,30 @@ function AdminQuestion() {
                     <td data-label="이미지">
                       {!empty(item.files) &&
                         item.files.map((file, index) => {
-                          <div key={`file-${file.seq}`}>
-                            <img
-                              style={{ width: 300 }}
-                              src={`${process.env.PUBLIC_URL}/uploads/files_1667983424815.png`}
-                              alt="이미지"
-                            />
-                          </div>;
+                          return (
+                            <div key={`file-${file.seq}`}>
+                              <img
+                                style={{ width: 200 }}
+                                src={`${process.env.PUBLIC_URL}/uploads/${file.origin_name}`}
+                                alt="이미지"
+                              />
+                            </div>
+                          );
                         })}
                     </td>
                     <td data-label="답변">
-                      <textarea placeholder="답변을 적어주세요" />
+                      <textarea
+                        placeholder="답변을 적어주세요"
+                        cols="50"
+                        rows="15"
+                      />
+                      <button
+                        className="exam-btn"
+                        type="button"
+                        onClick={답변보내기.bind(this, item.user_seq)}
+                      >
+                        답변보내기
+                      </button>
                     </td>
                   </tr>
                 );

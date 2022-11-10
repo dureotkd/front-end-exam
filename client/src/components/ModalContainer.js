@@ -5,6 +5,7 @@ import { BsCheckLg } from "react-icons/bs";
 import ajax from "../apis/ajax";
 import { empty } from "../helpers";
 import { InputLabel, CodeMirror } from "../components/index";
+import { UserContext } from "../App";
 
 function AnotherPeopleAnswer() {
   const pathname = window.location.pathname.split("/");
@@ -314,7 +315,15 @@ function ModalContainer({
   showModal: { show, code, component },
   setShowModal,
 }) {
+  const { socketObj } = React.useContext(UserContext);
+
   const Component = component;
+
+  React.useEffect(() => {
+    socketObj.on("질문답변", (params) => {
+      alert("답변이왔어요~");
+    });
+  }, [socketObj]);
 
   React.useEffect(() => {
     const 바디클릭 = (event) => {

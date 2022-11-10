@@ -1,13 +1,15 @@
 const express = require("express");
+const http = require("http");
+const socketIo = require("socket.io");
 const app = express();
+const server = http.createServer(app);
+
 const port = 4000;
 
 const cors = require("cors");
 
 const fs = require("fs");
 const multer = require("multer");
-const path = require("path");
-const mime = require("mime");
 
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
@@ -57,6 +59,56 @@ app.use((req, res, next) => {
 
   next();
 });
+
+// ===================================== 소켓 =================================
+
+const io = socketIo(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+const socketDB = {
+  room: {},
+};
+
+io.on("connection", (socket) => {
+  const socket_id = socket.id;
+
+  console.log("소켓서버시작", socket_id);
+
+  socket.on("클라이언트방에넣기", (user) => {
+    if (empty(user)) {
+      return;
+    }
+
+    const user_seq = user.seq;
+    socketDB.room[socket_id] = user_seq;
+
+    console.log(socketDB);
+  });
+
+  socket.on("질문답변", (user_seq) => {
+    if (!empty(socketDB.room)) {
+      for (let 소켓아이디 in socketDB.room) {
+        const 특정소켓아이디 = socketDB.room[소켓아이디];
+
+        if (특정소켓아이디 == user_seq) {
+          io.to(특정소켓아이디).emit("질문답변", {
+            body: "안녕하세요 답변이에요~",
+          });
+        }
+      }
+    }
+  });
+
+  socket.on("disconnect", () => {
+    delete socketDB.room[socket_id];
+    console.log("소켓서버종료");
+  });
+});
+
+// ===================================== 소켓 =================================
 
 app.get("/", (req, res) => {
   res.send("Hello.");
@@ -501,8 +553,6 @@ app.get("/question", async (req, res) => {
     }
   }
 
-  console.log(question_all_data);
-
   res.send(question_all_data);
 });
 
@@ -613,7 +663,7 @@ app.get("/hook", (req, res) => {
 
 // ========================== exam_result ==========================
 
-app.listen(port, () => {
+server.listen(port, () => {
   const dir = "../client/public/uploads";
 
   if (!fs.existsSync(dir)) {

@@ -72,11 +72,11 @@ function Login(param) {
         })
         .then(({ data: { code, direct_url } }) => {
           if (code === "success") {
-            navigation(direct_url);
+            window.location.href = direct_url;
           }
         });
     },
-    [inputs, navigation]
+    [inputs]
   );
 
   const handleInputValue = React.useCallback(
