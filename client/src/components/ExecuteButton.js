@@ -15,7 +15,7 @@ function ExecuteButton({ onClick, style, text }) {
       }}
       style={{ ...style }}
     >
-      {loading ? <div className="loader" /> : text}
+      {loading ? <div className="btn-loader" /> : text}
     </button>
   );
 }

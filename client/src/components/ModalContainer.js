@@ -167,7 +167,6 @@ function QuestionForm() {
 
   const handleInputValue = React.useCallback(
     ({ target: { name, value } }) => {
-      console.log(name, value);
       const clonePrev = [...inputs];
       const findIndex = clonePrev.findIndex((item) => {
         return item.name === name;
@@ -298,16 +297,16 @@ function QuestionForm() {
 function Alarm() {
   const { alarmData, setAlarmData } = React.useContext(UserContext);
 
-  // React.useEffect(() => {
-  //   return () => {
-  //     setAlarmData((prev) => {
-  //       return {
-  //         isAlaram: false,
-  //         data: [],
-  //       };
-  //     });
-  //   };
-  // }, [setAlarmData]);
+  React.useEffect(() => {
+    return () => {
+      setAlarmData((prev) => {
+        return {
+          isAlaram: false,
+          data: [],
+        };
+      });
+    };
+  }, [setAlarmData]);
 
   return (
     <div className="modal-children-box">

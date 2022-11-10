@@ -50,20 +50,31 @@ function App() {
   });
   React.useEffect(() => {
     (async () => {
-      await ajax.get("/alaram").then(({ data }) => {
-        if (!empty(data)) {
+      if (!empty(loginUser)) {
+        await ajax.get("/alaram").then(({ data }) => {
           console.log(data);
 
-          // setAlarmData((prev) => {
-          //   return {
-          //     isAlaram: true,
-          //     data,
-          //   };
-          // });
-        }
-      });
+          if (!empty(data)) {
+            const res_data = [];
+
+            data.forEach((row) => {
+              res_data.push({
+                body: row.answer_body,
+                item: row,
+              });
+            });
+
+            setAlarmData((prev) => {
+              return {
+                isAlaram: true,
+                data: res_data,
+              };
+            });
+          }
+        });
+      }
     })();
-  }, []);
+  }, [loginUser]);
   React.useEffect(() => {
     if (empty(socketObj)) {
       return;

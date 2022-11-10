@@ -41,7 +41,7 @@ function AdminQuestion() {
 
   const 답변보내기 = React.useCallback(
     async ({ exam_seq, user_seq }) => {
-      const res_body = body[user_seq];
+      const res_body = body[user_seq].body;
 
       await ajax.post("/question/answer", {
         exam_seq: exam_seq,

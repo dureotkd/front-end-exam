@@ -568,22 +568,19 @@ app.get("/question", async (req, res) => {
   res.send(question_all_data);
 });
 
-app.post("/question/answer", (req, res) => {
+app.post("/question/answer", async (req, res) => {
   const { exam_seq, user_seq, body } = req.body;
 
   const now_date = get_now_date();
 
   const update_sql = Model.getUpdateQuery({
-    tablee : 'question',
-    data : {
-      answer_body : body,
-      edit_date : now_date,
+    table: "question",
+    data: {
+      answer_body: body,
+      edit_date: now_date,
     },
-    where : [
-      `exam_seq = '${exam_seq}'`,
-      `user_seq = '${user_seq}'`
-    ]
-  })
+    where: [`exam_seq = '${exam_seq}'`, `user_seq = '${user_seq}'`],
+  });
 
   await Model.excute({
     sql: update_sql,
@@ -591,10 +588,9 @@ app.post("/question/answer", (req, res) => {
   });
 
   res.send({
-    code : 'success',
-    message : '답변완료'
-  })
-
+    code: "success",
+    message: "답변완료",
+  });
 });
 
 app.post("/question", upload.array("files"), async (req, res) => {

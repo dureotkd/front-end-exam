@@ -167,7 +167,7 @@ pre {
   margin-left: 12px;
 }
 
-.loader {
+.btn-loader {
   border: 2px solid #f3f3f3;
   -webkit-animation: spin 1s linear infinite;
   animation: spin 1s linear infinite;

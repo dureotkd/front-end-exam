@@ -15,6 +15,7 @@ import {
   Horizontal,
   PageLoading,
 } from "../components/index";
+import { empty } from "../helpers";
 
 const 에러로그보여줘 = (error) => {
   이전로그다지워();
@@ -70,6 +71,8 @@ function Exam() {
     (value = null) => {
       이전로그다지워();
 
+      console.log(typeof value);
+
       const 콘솔프로토타입상속 = `
 
       const c = window.console;
@@ -93,7 +96,8 @@ function Exam() {
       let console = new Console();
 
       if (${value}) {
-        console.log(${value});
+        const 밸류 = JSON.parse('${JSON.stringify(value)}');
+        console.log(밸류);
         console = c;
       }
 
@@ -205,7 +209,7 @@ function Exam() {
       // eslint-disable-next-line no-new-func
       let 가상머신함수 = new Function(즉시실행함수로묶기);
       정답케이스들 = 가상머신함수()();
-      console.log(정답케이스들.유저케이스);
+
       코드실행(정답케이스들.유저케이스);
     } catch (error) {
       에러로그보여줘(error);
@@ -270,6 +274,8 @@ function Exam() {
         }
       });
   }, [code, exam?.answer, seq, setShowModal, 코드실행]);
+
+  const 제출하기실행결과콘솔로그로보여줘 = React.useCallback(() => {}, []);
 
   const 질문하기 = React.useCallback(() => {
     setShowModal({
