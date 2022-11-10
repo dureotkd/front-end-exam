@@ -298,22 +298,36 @@ function QuestionForm() {
 function Alarm() {
   const { alarmData, setAlarmData } = React.useContext(UserContext);
 
-  React.useEffect(() => {
-    return () => {
-      setAlarmData((prev) => {
-        return {
-          ...prev,
-          data: [],
-        };
-      });
-    };
-  }, [setAlarmData]);
+  // React.useEffect(() => {
+  //   return () => {
+  //     setAlarmData((prev) => {
+  //       return {
+  //         isAlaram: false,
+  //         data: [],
+  //       };
+  //     });
+  //   };
+  // }, [setAlarmData]);
 
   return (
     <div className="modal-children-box">
       <h2>알림</h2>
       <div className="alaram_wrap">
-        {!empty(alarmData.data) ? <div>있음</div> : <div>없음</div>}
+        {!empty(alarmData.data) ? (
+          <div style={{ marginTop: 12 }}>
+            {alarmData.data.map(({ body, item }, index) => {
+              return (
+                <div key={index} style={{ marginBottom: 12 }}>
+                  <p>{item.title}</p>
+                  <p>답변 : {body}</p>
+                  <p>날짜 : {item.now_date}</p>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div>없음</div>
+        )}
       </div>
     </div>
   );

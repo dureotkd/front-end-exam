@@ -51,7 +51,19 @@ function Header({ navigation }) {
     <div className="nav-bar">
       <p style={{ color: "rgb(108 108 108)" }}>{navigation}</p>
       <div onClick={네비보여줘}>
-        {alarmData.isAlaram && <span style={{ color: "red" }}>띠용띠용</span>}
+        {alarmData.isAlaram && (
+          <img
+            style={{
+              position: "absolute",
+              width: 45,
+              marginRight: 12,
+              top: 0,
+              right: 45,
+            }}
+            src={`${process.env.PUBLIC_URL}/images/alaram_animation.gif`}
+            alt="이미지"
+          />
+        )}
         <img
           className="profile-img"
           style={{ width: 24, borderRadius: 4, cursor: "pointer" }}

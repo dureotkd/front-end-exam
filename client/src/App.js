@@ -53,10 +53,12 @@ function App() {
       return;
     }
 
-    socketObj.on("질문답변", async ({ body, item }) => {
+    socketObj.on("질문답변", async ({ body, item, now_date }) => {
+      item.now_date = now_date;
+
       const cloneAlarmData = { ...alarmData };
       cloneAlarmData.isAlaram = true;
-      cloneAlarmData.data.push({
+      cloneAlarmData.data.unshift({
         body: body,
         item: item,
       });
@@ -73,7 +75,7 @@ function App() {
         // const cloneAlarmData = { ...alarmData };
         // cloneAlarmData.isAlaram = false;
         // setAlarmData(cloneAlarmData);
-      }, 5000);
+      }, 60000);
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

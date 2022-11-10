@@ -90,11 +90,17 @@ io.on("connection", (socket) => {
 
   socket.on("질문답변", ({ user_seq, body }) => {
     if (!empty(socketDB.room)) {
+      const now_date = get_now_date();
+      const res_now_date = timeForToday(now_date);
+
       for (let 소켓아이디 in socketDB.room) {
         const 특정회원번호 = socketDB.room[소켓아이디];
 
         if (특정회원번호 == user_seq) {
           console.log(소켓아이디, "가야되는데..?");
+          const 데이터값 = body[user_seq];
+          데이터값.now_date = res_now_date;
+
           io.to(소켓아이디).emit("질문답변", body[user_seq]);
         }
       }
