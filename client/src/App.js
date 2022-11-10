@@ -49,6 +49,22 @@ function App() {
     data: [],
   });
   React.useEffect(() => {
+    (async () => {
+      await ajax.get("/alaram").then(({ data }) => {
+        if (!empty(data)) {
+          console.log(data);
+
+          // setAlarmData((prev) => {
+          //   return {
+          //     isAlaram: true,
+          //     data,
+          //   };
+          // });
+        }
+      });
+    })();
+  }, []);
+  React.useEffect(() => {
     if (empty(socketObj)) {
       return;
     }
@@ -71,11 +87,7 @@ function App() {
             ...prev,
           };
         });
-
-        // const cloneAlarmData = { ...alarmData };
-        // cloneAlarmData.isAlaram = false;
-        // setAlarmData(cloneAlarmData);
-      }, 60000);
+      }, 60000 * 5);
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

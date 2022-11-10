@@ -536,6 +536,15 @@ app.post("/answer", async (req, res) => {
   res.send(result);
 });
 
+app.get("/alaram", async (req, res) => {
+  const { loginUser } = req.session;
+
+  const question_sql = `SELECT *, (SELECT name FROM user WHERE a.user_seq = seq LIMIT 1) as user_name,(SELECT title FROM exam WHERE a.exam_seq = seq LIMIT 1) as exam_title FROM question a WHERE a.user_seq='${loginUser.seq}' AND view_yn = 'N'`;
+  const question_all = await Model.excute({ sql: question_sql, type: "all" });
+
+  res.send(question_all);
+});
+
 app.get("/question", async (req, res) => {
   const question_sql = `SELECT *, (SELECT name FROM user WHERE a.user_seq = seq LIMIT 1) as user_name,(SELECT title FROM exam WHERE a.exam_seq = seq LIMIT 1) as exam_title FROM question a`;
   const question_all = await Model.excute({ sql: question_sql, type: "all" });
@@ -557,6 +566,35 @@ app.get("/question", async (req, res) => {
   }
 
   res.send(question_all_data);
+});
+
+app.post("/question/answer", (req, res) => {
+  const { exam_seq, user_seq, body } = req.body;
+
+  const now_date = get_now_date();
+
+  const update_sql = Model.getUpdateQuery({
+    tablee : 'question',
+    data : {
+      answer_body : body,
+      edit_date : now_date,
+    },
+    where : [
+      `exam_seq = '${exam_seq}'`,
+      `user_seq = '${user_seq}'`
+    ]
+  })
+
+  await Model.excute({
+    sql: update_sql,
+    type: "exec",
+  });
+
+  res.send({
+    code : 'success',
+    message : '답변완료'
+  })
+
 });
 
 app.post("/question", upload.array("files"), async (req, res) => {

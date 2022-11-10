@@ -40,7 +40,15 @@ function AdminQuestion() {
   );
 
   const 답변보내기 = React.useCallback(
-    async (user_seq) => {
+    async ({ exam_seq, user_seq }) => {
+      const res_body = body[user_seq];
+
+      await ajax.post("/question/answer", {
+        exam_seq: exam_seq,
+        user_seq: user_seq,
+        body: res_body,
+      });
+
       socketObj.emit("질문답변", {
         user_seq: user_seq,
         body: body,
@@ -96,7 +104,7 @@ function AdminQuestion() {
                       <button
                         className="exam-btn"
                         type="button"
-                        onClick={답변보내기.bind(this, item.user_seq)}
+                        onClick={답변보내기.bind(this, item)}
                       >
                         답변보내기
                       </button>
