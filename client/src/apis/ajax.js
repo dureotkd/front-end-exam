@@ -3,9 +3,13 @@ import axios from "axios";
 import { time_helper, util_helper } from "../helpers";
 
 // ==================================== 요청 ======================================
+const baseURL =
+  window.location.host.includes("localhost") === true
+    ? "http://localhost:4000"
+    : "http://3.35.202.188:4000";
 
 const instance = axios.create({
-  baseURL: "http://localhost:4000/",
+  baseURL: baseURL,
   timeout: 3000,
   withCredentials: true,
   maxRedirects: 0,
@@ -62,7 +66,6 @@ instance.interceptors.response.use(
     const status = error?.response?.status;
 
     switch (status) {
-
       case 401:
         util_helper.toast({
           type: "error",
