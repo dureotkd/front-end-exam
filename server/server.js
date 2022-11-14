@@ -392,6 +392,8 @@ app.post("/answer", async (req, res) => {
       break;
     }
 
+    console.log("HELLO !!", exam_row.answer);
+
     const 시험케이스배열 = JSON.parse(exam_row.answer).map((item) => {
       return item.answer;
     });

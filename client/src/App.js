@@ -7,7 +7,7 @@ import AppIndex from "./AppIndex";
 
 import { ToastContainer } from "react-toastify";
 
-import ajax from "./apis/ajax";
+import ajax, { baseURL } from "./apis/ajax";
 import { ModalContainer } from "./components";
 import { io } from "socket.io-client";
 import { empty } from "./helpers";
@@ -35,7 +35,7 @@ function App() {
         }
 
         if (code === "success") {
-          const socket = io("http://localhost:4000");
+          const socket = io(baseURL);
           socket.emit("클라이언트방에넣기", user);
           setSocketObj(socket);
           setLoginUser(user);

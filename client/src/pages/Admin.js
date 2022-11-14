@@ -65,12 +65,12 @@ function Admin() {
     // 1
     const 정답케이스배열 = [
       {
-        input: ["good", "time", "good", "time", "student"],
-        answer: ["good", "time", "student"],
+        input: "COMPUTERPROGRAMMING",
+        answer: 3,
       },
       {
-        input: ["good", "time", "good", "time", "student", "danger", "danger"],
-        answer: ["good", "time", "student", "danger"],
+        input: "COMPUTERPROGRAMMINGRR",
+        answer: 5,
       },
     ];
 

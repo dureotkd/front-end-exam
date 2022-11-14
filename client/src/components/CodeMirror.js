@@ -1,8 +1,6 @@
 import React from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
-import { html } from "@codemirror/lang-html";
-import { css } from "@codemirror/lang-css";
 
 function CodeMirrorComponent({
   options,
@@ -22,8 +20,8 @@ function CodeMirrorComponent({
       readOnly={options?.readOnly || false}
       extensions={[
         javascript({ jsx: true }),
-        html({ matchClosingTags: true, autoClose: true }),
-        css(),
+        // html({ matchClosingTags: true, autoClose: true }),
+        // css()
       ]}
       onChange={onChange}
       theme={theme}

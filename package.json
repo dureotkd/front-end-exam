@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@sentry/react": "^7.18.0",
-    "@sentry/tracing": "^7.18.0"
+    "@sentry/tracing": "^7.18.0",
+    "react-codemirror2": "^7.2.1"
   }
 }

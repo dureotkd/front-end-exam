@@ -3,8 +3,8 @@ import axios from "axios";
 import { time_helper, util_helper } from "../helpers";
 
 // ==================================== 요청 ======================================
-const baseURL =
-  window.location.host.includes("localhost") === true
+export const baseURL =
+  window.location.host.indexOf("localhost") !== -1
     ? "http://localhost:4000"
     : "http://3.35.202.188:4000";
 
