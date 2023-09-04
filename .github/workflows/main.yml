@@ -42,7 +42,7 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./build.zip s3://pann-node-build/deploy/
+        run: aws s3 cp --region ap-northeast-2 ./build.zip s3://front-end-exam/deploy/
         if: github.ref == 'refs/heads/master'
 
       - name: upload to S3 (staging)
@@ -53,14 +53,14 @@ jobs:
         run: |
           if [ "${{ github.ref }}" = "refs/heads/master" ]; then
             aws deploy create-deployment \
-              --application-name pann-code-deploy \
+              --application-name front-end-exam \
               --deployment-config-name CodeDeployDefault.OneAtATime \
-              --deployment-group-name GROUP \
+              --deployment-group-name front-end-exam-group \
               --s3-location bucket=pann-node-build,bundleType=zip,key=deploy/build.zip
           elif [ "${{ github.ref }}" = "refs/heads/staging" ]; then
             aws deploy create-deployment \
-              --application-name w1-pann-code-deploy \
+              --application-name w1-front-end-exam \
               --deployment-config-name CodeDeployDefault.OneAtATime \
-              --deployment-group-name w1-GROUP \
+              --deployment-group-name w1-front-end-exam-group \
               --s3-location bucket=pann-node-build-w1,bundleType=zip,key=deploy/build.zip
           fi
