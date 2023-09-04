@@ -60,6 +60,13 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/test", (req, res) => {
+  res.send({
+    title: "zz",
+    body: "zzz",
+  });
+});
+
 // ===================================== 소켓 =================================
 
 const io = socketIo(server, {
