@@ -40,7 +40,7 @@ class Core {
     const i_values = Object.values(insertData);
 
     if (i_column.length !== i_values.length)
-      return throwError("Error Object Key Value");
+      return throwError("Error Object Key Value!");
 
     const c = i_column.join(",");
     const v = i_values.join("','");
