@@ -129,7 +129,7 @@ app.get("/test", (req, res) => {
 app.get("/login", (req, res) => {
   const result = {
     code: "fail",
-    msg: "로그인 실패",
+    msg: "로그인 실패입니다..?",
   };
 
   const loginUser = req.session.loginUser;
