@@ -1,5 +1,5 @@
 #!/bin/bash
-REPOSITORY=/home/ec2-user/project/front-end-exam/client
+REPOSITORY=/home/ec2-user/project/front-end-exam
 
 source ~/.bashrc
 
@@ -7,6 +7,6 @@ cd $REPOSITORY
 
 git pull origin master
 npx yarn
-npx yarn run build
+npx npm run build
 
 
