@@ -52,7 +52,7 @@ function AuthLayout({ onSubmit, onChange, inputs, disabled }) {
             }}
             to="/"
           >
-            로그인
+            로그인~~
           </Link>
           <Link
             style={{
@@ -64,7 +64,7 @@ function AuthLayout({ onSubmit, onChange, inputs, disabled }) {
             }}
             to="/join"
           >
-            회원가입
+            회원가입~~
           </Link>
         </div>
 

@@ -1,12 +1,8 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-
 import { AuthLayout } from "../components";
 import ajax from "../apis/ajax";
 
 function Login(param) {
-  const navigation = useNavigate();
-
   const [inputs, setInputs] = React.useState([
     {
       label: "이메일",
