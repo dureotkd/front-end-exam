@@ -60,13 +60,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/test", (req, res) => {
-  res.send({
-    title: "zz",
-    body: "zzz",
-  });
-});
-
 // ===================================== 소켓 =================================
 
 const io = socketIo(server, {
@@ -126,9 +119,17 @@ app.get("/", (req, res) => {
   res.send("Hello.");
 });
 
+app.get("/test", (req, res) => {
+  res.send({
+    title: "zz",
+    body: "zzz",
+  });
+});
+
 app.get("/login", (req, res) => {
   const result = {
     code: "fail",
+    msg: "로그인 실패",
   };
 
   const loginUser = req.session.loginUser;
