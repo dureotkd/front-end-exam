@@ -55,7 +55,7 @@ jobs:
             aws deploy create-deployment \
               --application-name front-end-exam \
               --deployment-config-name CodeDeployDefault.OneAtATime \
-              --deployment-group-name front-end-exam-group \
+              --deployment-group-name front-end-group \
               --s3-location bucket=front-end-exam,bundleType=zip,key=deploy/build.zip
           elif [ "${{ github.ref }}" = "refs/heads/staging" ]; then
             aws deploy create-deployment \
