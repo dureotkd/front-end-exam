@@ -13,7 +13,12 @@ permissions:
     group: ec2-user
 
 hooks:
-  AfterInstall:
+  AfterServerInstall:
     - location: scripts/after-deploy.sh
+      timeout: 300
+      runas: ec2-user
+
+  AfterFeInstall:
+    - location: scripts/after-fe-deploy.sh
       timeout: 300
       runas: ec2-user
