@@ -5,6 +5,7 @@ source ~/.bashrc
 
 cd $SERVER_REPOSITORY
 
+git pull origin master
 npx yarn
 npx pm2 reload server.js
 
