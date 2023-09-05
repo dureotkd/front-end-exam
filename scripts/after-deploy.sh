@@ -9,7 +9,6 @@ cd $REPOSITORY
 
 git pull origin master
 
-
 cd $SERVER_REPOSITORY
 
 npx yarn
@@ -20,7 +19,3 @@ cd $CLIENT_REPOSITORY
 
 npx yarn
 npx npm run build
-
-
-
-
