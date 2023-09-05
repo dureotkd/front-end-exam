@@ -1,18 +1,9 @@
 #!/bin/bash
-REPOSITORY=/home/ec2-user/project/front-end-exam
+SERVER_REPOSITORY=/home/ec2-user/project/front-end-exam/server
 
 source ~/.bashrc
 
-cd $REPOSITORY
+cd $SERVER_REPOSITORY
 
-git pull origin master
-
-cd "$REPOSITORY/server"
 npx yarn
 npx pm2 reload server.js
-
-cd "$REPOSITORY/client"
-npx yarn
-npx npm run build
-
-
