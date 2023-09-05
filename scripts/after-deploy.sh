@@ -20,3 +20,5 @@ cd $CLIENT_REPOSITORY
 
 npx yarn
 npx npm run build
+
+
