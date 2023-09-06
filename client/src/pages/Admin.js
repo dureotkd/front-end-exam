@@ -65,12 +65,12 @@ function Admin() {
     // 1
     const 정답케이스배열 = [
       {
-        input: "COMPUTERPROGRAMMING",
-        answer: 3,
+        input: [1, 3, 4, 6],
+        answer: "1223330333221",
       },
       {
-        input: "COMPUTERPROGRAMMINGRR",
-        answer: 5,
+        input: [1, 7, 1, 2],
+        answer: "111303111",
       },
     ];
 

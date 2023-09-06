@@ -7,11 +7,9 @@ function ExecuteButton({ onClick, style, text }) {
     <button
       className="exam-btn"
       onClick={async () => {
-        setLoading(true);
-
+        // setLoading(true);
         await onClick();
-
-        setLoading(false);
+        // setLoading(false);
       }}
       style={{ ...style }}
     >

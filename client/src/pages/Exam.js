@@ -41,7 +41,7 @@ function Exam() {
   const [loading, setLoading] = React.useState(true);
   const [exam, setExam] = React.useState(null);
   const [code, setCode] = React.useState(
-    "function solution(입력) { \n\n}\n\n\n\nconst 입력 = '';\nsolution(입력);"
+    "function solution(입력) { \n\n  return '정답을 리턴해주세요';\n}\n\n\n\nconst 입력 = '';\nconsole.log(solution(입력));"
   );
 
   React.useEffect(() => {
@@ -113,66 +113,8 @@ function Exam() {
     [code]
   );
 
-  React.useEffect(() => {
-    const 키보드탐지 = (event) => {
-      const key_code = event.keyCode;
-
-      switch (key_code) {
-        // F9 (코드실행)
-
-        case 120:
-          코드실행();
-          break;
-
-        default:
-          break;
-      }
-    };
-
-    window.addEventListener("keyup", 키보드탐지);
-
-    return () => {
-      window.removeEventListener("keyup", 키보드탐지);
-    };
-  }, [코드실행]);
-
-  const [timer, setTimer] = React.useState(null);
-  const 타이머시작 = React.useCallback(() => {
-    setTimer(timer === null ? "00:00" : null);
-  }, [timer]);
-  React.useEffect(() => {
-    if (timer === null) {
-      return;
-    }
-
-    const interval = setInterval(() => {
-      const timmerArr = timer.split(":");
-
-      const now_date = new Date(
-        "2021",
-        "07",
-        "06",
-        "1",
-        timmerArr[0],
-        parseInt(timmerArr[1]) + 1
-      );
-
-      let min = now_date.getMinutes();
-      let sec = now_date.getSeconds();
-
-      let res_min = min < 10 ? `0${min}` : min;
-      let res_sec = sec < 10 ? `0${sec}` : sec;
-
-      setTimer(`${res_min}:${res_sec}`);
-    }, 1000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [timer]);
-
   const 제출하기 = React.useCallback(async () => {
-    const 시험케이스배열 = JSON.parse(exam.answer);
+    const 시험케이스배열 = !empty(exam.answer) ? JSON.parse(exam.answer) : null;
 
     let 즉시실행함수로묶기 = ` 
       const EXCUTE_ANSWER = () => {
@@ -272,6 +214,68 @@ function Exam() {
         }
       });
   }, [code, exam?.answer, seq, setShowModal, 코드실행]);
+
+  React.useEffect(() => {
+    const 키보드탐지 = (event) => {
+      const key_code = event.keyCode;
+
+      switch (key_code) {
+        // F4 (제출하기)
+        case 115:
+          제출하기();
+          break;
+
+        // F9 (코드실행)
+        case 120:
+          코드실행();
+          break;
+
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener("keyup", 키보드탐지);
+
+    return () => {
+      window.removeEventListener("keyup", 키보드탐지);
+    };
+  }, [제출하기, 코드실행]);
+
+  const [timer, setTimer] = React.useState(null);
+  const 타이머시작 = React.useCallback(() => {
+    setTimer(timer === null ? "00:00" : null);
+  }, [timer]);
+  React.useEffect(() => {
+    if (timer === null) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      const timmerArr = timer.split(":");
+
+      const now_date = new Date(
+        "2021",
+        "07",
+        "06",
+        "1",
+        timmerArr[0],
+        parseInt(timmerArr[1]) + 1
+      );
+
+      let min = now_date.getMinutes();
+      let sec = now_date.getSeconds();
+
+      let res_min = min < 10 ? `0${min}` : min;
+      let res_sec = sec < 10 ? `0${sec}` : sec;
+
+      setTimer(`${res_min}:${res_sec}`);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [timer]);
 
   const 제출하기실행결과콘솔로그로보여줘 = React.useCallback(() => {}, []);
 
@@ -387,12 +391,12 @@ function Exam() {
         <div style={{ display: "flex", alignItems: "center" }}>
           <ExecuteButton text="정답보기" onClick={정답보기} />
           <ExecuteButton
-            text="코드실행"
+            text="코드실행 (F9)"
             onClick={코드실행}
             style={{ marginLeft: 12 }}
           />
           <ExecuteButton
-            text="제출하기"
+            text="제출하기 (F4)"
             onClick={제출하기}
             style={{ marginLeft: 12, backgroundColor: "#2146c7" }}
           />

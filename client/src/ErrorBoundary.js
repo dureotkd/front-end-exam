@@ -1,5 +1,4 @@
 import React from "react";
-
 import * as Sentry from "@sentry/browser";
 
 class ErrorBoundary extends React.Component {
@@ -12,11 +11,6 @@ class ErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     if (process.env.NODE_ENV === "production") {
     }
-
-    Sentry.captureMessage("에러 메시지", {
-      name: "성민",
-      age: 20,
-    });
   }
 
   render() {
@@ -24,8 +18,21 @@ class ErrorBoundary extends React.Component {
 
     if (error === true) {
       return (
-        <div>
-          <h2>Error Page!</h2>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+            height: "100vh",
+          }}
+        >
+          <img
+            style={{ width: 300 }}
+            src={`${process.env.PUBLIC_URL}/images/404_animation.gif`}
+            alt="404페이지"
+          />
+          <h1>404 ERROR PAGE</h1>
         </div>
       );
     }

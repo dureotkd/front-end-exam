@@ -52,10 +52,10 @@ app.use((req, res, next) => {
   const req_name = path_array[path_array.length - 1];
   const 로그인필요없는요청 = ["login", "logout", "join"];
 
-  // if (로그인필요없는요청.includes(req_name) === false && empty(loginUser)) {
-  //   res.status(401).send("");
-  //   return;
-  // }
+  if (로그인필요없는요청.includes(req_name) === false && empty(loginUser)) {
+    res.status(401).send("");
+    return;
+  }
 
   next();
 });
@@ -167,7 +167,9 @@ app.post("/login", async (req, res) => {
     return;
   }
 
-  const last_exam_seq = user_row.last_exam_seq;
+  const last_exam_seq = !empty(user_row.last_exam_seq)
+    ? user_row.last_exam_seq
+    : 1;
 
   result.direct_url = `/exam/${last_exam_seq}`;
 
@@ -400,9 +402,15 @@ app.post("/answer", async (req, res) => {
       break;
     }
 
-    console.log("HELLO !!", exam_row.answer);
+    const exam_answer = !empty(exam_row.answer) ? exam_row.answer : "";
 
-    const 시험케이스배열 = JSON.parse(exam_row.answer).map((item) => {
+    if (empty(exam_answer)) {
+      result.code = "error";
+      result.message = "정답 미등록 문제입니다";
+      break;
+    }
+
+    const 시험케이스배열 = JSON.parse(exam_answer).map((item) => {
       return item.answer;
     });
 

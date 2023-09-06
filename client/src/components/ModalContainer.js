@@ -109,10 +109,7 @@ function Problem() {
             <tr>
               <th>번호</th>
               <th>상태</th>
-              <th>난이도</th>
               <th>제목</th>
-              <th>진행중인 사람</th>
-              <th>정답률</th>
               <th>날짜</th>
             </tr>
           </thead>
@@ -134,10 +131,7 @@ function Problem() {
                         <BsCheckLg size={15} color="green" />
                       )}
                     </td>
-                    <td style={{ width: 100 }}>{item.level_name}</td>
                     <td style={{ fontWeight: "bold" }}>{item.title}</td>
-                    <td style={{ width: 110 }}>{item.user_len}</td>
-                    <td style={{ width: 80 }}>{item.percent}</td>
                     <td style={{ width: 100 }}>{item.date}</td>
                   </tr>
                 );
