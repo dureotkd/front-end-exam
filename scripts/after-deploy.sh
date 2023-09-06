@@ -15,7 +15,7 @@ npx yarn
 npx pm2 reload server.js
 
 
-# cd $CLIENT_REPOSITORY
+cd $CLIENT_REPOSITORY
 
-# npx yarn
-# npx yarn run build
+npx yarn
+npx yarn run build
