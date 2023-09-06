@@ -6,7 +6,7 @@ import { time_helper, util_helper } from "../helpers";
 export const baseURL =
   window.location.host.indexOf("localhost") !== -1
     ? "http://localhost:4000"
-    : "http://43.200.131.181:4000";
+    : "http://15.165.191.73:4000";
 
 const instance = axios.create({
   baseURL: baseURL,

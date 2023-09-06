@@ -8,13 +8,13 @@ function Login(param) {
       label: "이메일",
       name: "email",
       value: "",
-      placeholder: "이메일을 입력해 주세요ㅎㅎ!!!",
+      placeholder: "이메일을 입력해 주세요",
     },
     {
       label: "비밀번호",
       name: "password",
       value: "",
-      placeholder: "비밀번호를 입력해 주세요ㅎ!!!ㅎ",
+      placeholder: "비밀번호를 입력해 주세요",
     },
   ]);
 
