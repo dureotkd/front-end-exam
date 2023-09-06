@@ -7,7 +7,7 @@ source ~/.bashrc
 
 cd $REPOSITORY
 
-git pull origin master
+npx git pull origin master
 
 cd $SERVER_REPOSITORY
 
