@@ -52,10 +52,10 @@ app.use((req, res, next) => {
   const req_name = path_array[path_array.length - 1];
   const 로그인필요없는요청 = ["login", "logout", "join"];
 
-  if (로그인필요없는요청.includes(req_name) === false && empty(loginUser)) {
-    res.status(401).send("");
-    return;
-  }
+  // if (로그인필요없는요청.includes(req_name) === false && empty(loginUser)) {
+  //   res.status(401).send("");
+  //   return;
+  // }
 
   next();
 });
