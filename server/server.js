@@ -4,6 +4,7 @@ const socketIo = require("socket.io");
 const app = express();
 const server = http.createServer(app);
 
+const seeex = 0;
 const port = 4000;
 
 const cors = require("cors");
