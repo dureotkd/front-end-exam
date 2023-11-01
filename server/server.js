@@ -121,7 +121,7 @@ app.get("/", (req, res) => {
 
 app.get("/test", (req, res) => {
   res.send({
-    title: "SEEEEZX",
+    title: "asfasffqwfw",
     body: "zzz",
   });
 });
