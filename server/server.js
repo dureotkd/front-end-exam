@@ -122,7 +122,7 @@ app.get("/", (req, res) => {
 
 app.get("/test", (req, res) => {
   res.send({
-    title: "SEEEX",
+    title: "HELLO",
     body: "zzz",
   });
 });
