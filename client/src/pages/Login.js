@@ -52,6 +52,8 @@ function Login(param) {
     return result;
   }, [inputs]);
 
+  console.log(disabled);
+
   const handleLogin = React.useCallback(
     async (event) => {
       event.preventDefault();
@@ -92,7 +94,7 @@ function Login(param) {
       onSubmit={handleLogin}
       onChange={handleInputValue}
       inputs={inputs}
-      disabled={disabled}
+      disabled={false}
     />
   );
 }

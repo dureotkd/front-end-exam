@@ -277,8 +277,6 @@ function Exam() {
     };
   }, [timer]);
 
-  const 제출하기실행결과콘솔로그로보여줘 = React.useCallback(() => {}, []);
-
   const 질문하기 = React.useCallback(() => {
     setShowModal({
       show: true,
