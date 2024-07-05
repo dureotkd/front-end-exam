@@ -2,9 +2,9 @@ const mysql = require("mysql2");
 const db = mysql.createPoolCluster();
 
 db.add("code_exam", {
-  host: "15.165.191.73",
-  user: "root",
-  password: "@Slsksh33@",
+  host: "",
+  user: "",
+  password: "",
   database: "code_exam",
   port: 3306,
 });
