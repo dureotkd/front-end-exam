@@ -64,14 +64,18 @@ function Admin() {
   const 정답값만들어 = React.useCallback(() => {
     // 1
     const 정답케이스배열 = [
+      // {
+      //   input: [5, 1, 4],
+      //   answer: [5, 5, 5, 5, 5, 1, 4, 4, 4, 4],
+      // },
+      // {
+      //   input: [6, 6],
+      //   answer: [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
+      // },
       {
-        input: [1, 3, 4, 6],
-        answer: "1223330333221",
-      },
-      {
-        input: [1, 7, 1, 2],
-
-        answer: "111303111",
+        players: ["mumu", "soe", "poe", "kai", "mine"],
+        callings: ["kai", "kai", "mine", "mine"],
+        result: ["mumu", "kai", "mine", "soe", "poe"],
       },
     ];
 
@@ -94,7 +98,7 @@ function Admin() {
           // navigation("/exam/" + data);
         }
       });
-  }, [body, data, navigation]);
+  }, [body, data]);
 
   const 기본정보넣자 = React.useCallback(({ target: { name, value } }) => {
     setData((prev) => {

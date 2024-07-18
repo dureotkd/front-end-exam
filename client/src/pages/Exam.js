@@ -1,3 +1,4 @@
+/* eslint-disable no-new-func */
 import React from "react";
 
 import { Viewer } from "@toast-ui/react-editor";
@@ -68,7 +69,7 @@ function Exam() {
     setCode(value);
   }, []);
   const 코드실행 = React.useCallback(
-    (value = "이건아무도디폴트로설정안할걸??????@!@#@#@#(@#(@#@#(") => {
+    (value = "ANY_DEFAULT_012340101231321") => {
       이전로그다지워();
 
       const 콘솔프로토타입상속 = `
@@ -93,10 +94,10 @@ function Exam() {
       Console.prototype.__proto__ = ConsoleObject;
       let console = new Console();
 
-      if ('${value}' != '이건아무도디폴트로설정안할걸??????@!@#@#@#(@#(@#@#(' ) {
-        const 밸류 = JSON.parse('${JSON.stringify(value)}');
-        console.log(밸류);
-        console = c;
+      if ('${value}' != 'ANY_DEFAULT_012340101231321' ) {
+        // const 밸류 = JSON.parse('${JSON.stringify(value)}');
+        // console.log(밸류);
+        // console = c;
       }
 
     `;
@@ -116,27 +117,104 @@ function Exam() {
   const 제출하기 = React.useCallback(async () => {
     const 시험케이스배열 = !empty(exam.answer) ? JSON.parse(exam.answer) : null;
 
+    // =============================== 회원코드실행 ===============================
+
+    let cleanedCode = code.replace(/^\s*console\.log.*$/gm, "");
+    let 임의함수 = `
+
+        const USER_ANSWER = () => {
+          
+          return (${cleanedCode})();
+        }
+
+        return USER_ANSWER;
+    `;
+
+    try {
+      let 임의함수가상머신 = new Function(임의함수);
+      let 사용자코드리턴값 = 임의함수가상머신()();
+
+      코드실행(사용자코드리턴값);
+    } catch (error) {
+      에러로그보여줘(error);
+    }
+
+    // =============================== 회원코드실행 ===============================
+
+    // =============================== 매게변수 ===============================
+
+    const match = cleanedCode.match(/\(([^)]+)\)/);
+    let arguments2 = "";
+    if (match) {
+      arguments2 = match[1].replace(/\s+/g, "");
+    }
+    const arguments_array = `{${arguments2}}`;
+
+    console.log(arguments_array);
+
+    const jsonString = arguments_array
+      .replace(/(\w+)=/g, '"$1":') // 키를 큰따옴표로 감싸기
+      .replace(/=/g, ":"); // 등호를 콜론으로 변환
+
+    const jsonArray = JSON.parse(jsonString);
+    const 시험매개변수 = {};
+
+    for (let key in jsonArray) {
+      시험매개변수[key] = 시험케이스배열[0][key];
+    }
+
+    // =============================== 매게변수 ===============================
+
+    // =============================== 회원코드를 바탕으로 시험 매게변수 대입 ===============================
+
     let 즉시실행함수로묶기 = ` 
       const EXCUTE_ANSWER = () => {
 
         let 이사람이구현한값 = null;
-        const 내가비교할정답배열들 = [];
+        const 기본케이스 = [];
 
-        const 문자로변환 = '${JSON.stringify(시험케이스배열)}';
+        const 문자로변환 = '${JSON.stringify(시험매개변수)}';
         const 인풋과아웃풋들 = JSON.parse(문자로변환);
+
+        console.log(인풋과아웃풋들);
+
 
         ${code}
 
-        for(let key in 인풋과아웃풋들) {
-          const { input , answer } = 인풋과아웃풋들[key];
-          내가비교할정답배열들.push(solution(input));
-        }
 
-        이사람이구현한값 = solution(입력);
+
+        // for(let key in 인풋과아웃풋들) {
+        //   // const { input , answer } = 인풋과아웃풋들[key];
+
+        //   const arguments = 인풋과아웃풋들[key];
+        //   const arguments_str = JSON.stringify(arguments);
+
+        //   console.log(arguments_str);
+
+        //   // let solution_str = 'solution(';
+
+        //   // for (let index in arguments) {
+          
+        //   //   const argument = arguments[index];
+
+        //   //   if (index == 'result') {
+        //   //     continue;
+        //   //   }
+
+        //   //   solution_str += index + '=' + argument;
+        //   // }
+
+        //   // console.log(solution_str);
+
+
+        //   내가비교할정답배열들.push(solution(input));
+        // }
+
+        // 이사람이구현한값 = solution(입력);
 
         return {
-          기본케이스 : 내가비교할정답배열들,
-          유저케이스 : 이사람이구현한값
+          기본케이스 : 기본케이스,
+          // 유저케이스 : 이사람이구현한값
         };
       }
 
@@ -150,10 +228,14 @@ function Exam() {
       let 가상머신함수 = new Function(즉시실행함수로묶기);
       정답케이스들 = 가상머신함수()();
 
+      console.log(정답케이스들);
+
       코드실행(정답케이스들.유저케이스);
     } catch (error) {
       에러로그보여줘(error);
     }
+
+    // =============================== 회원코드를 바탕으로 시험 매게변수 대입 ===============================
 
     await ajax
       .post("/answer", {

@@ -89,12 +89,6 @@ button:disabled {
   min-height: 600px;
 }
 
-.toastui-editor-contents code {
-  background-color: #2146c7 !important;
-  border-color: #2146c7 !important;
-  color: #cdd7e0;
-}
-
 .toastui-editor-contents hr {
   border: 0.5px solid #263238 !important;
 }
@@ -378,4 +372,139 @@ pre {
     no-repeat 0.625rem 50%;
   background-size: 0.875rem 2.25rem;
   cursor: ew-resize;
+}
+
+.toastui-editor-contents p {
+  margin: 10px 0;
+  color: #b2c0cc !important;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: "NotoRegular";
+  letter-spacing: -0.1px;
+  line-height: 32px !important;
+}
+
+.toastui-editor-contents table th,
+.toastui-editor-contents table td {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 5px 14px 5px 12px;
+  height: 32px;
+  background: #202b3d !important;
+}
+
+.toastui-editor-contents code {
+  background: #202b3d !important;
+  color: #b5b5b5 !important;
+  padding: 2px 8px !important;
+  margin: 0 3px !important;
+  letter-spacing: -0.3px;
+  border-radius: 2px;
+}
+
+.toastui-editor-contents h1,
+.toastui-editor-contents h2,
+.toastui-editor-contents h3,
+.toastui-editor-contents h4,
+.toastui-editor-contents h5,
+.toastui-editor-contents h6 {
+  font-family: "NotoBold" !important;
+  color: #fff !important;
+  margin-bottom: 24px !important;
+  font-size: 17px !important;
+}
+
+.toastui-editor-contents th p {
+  margin: 0;
+  color: #fff !important;
+}
+
+.toastui-editor-contents ul > li::before {
+  content: "";
+  margin-top: 14px !important;
+  margin-left: -17px !important;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #ccc;
+}
+
+.challenge-body .challenge-content .guide-section .markdown pre,
+.challenge-body .challenge-content .guide-section .markdown .code pre,
+.challenge-body .challenge--mock .guide-section .markdown pre,
+.challenge-body .challenge--mock .guide-section .markdown .code pre,
+.challenges-show .challenge-content .guide-section .markdown pre,
+.challenges-show .challenge-content .guide-section .markdown .code pre,
+.challenges-show .challenge--mock .guide-section .markdown pre,
+.challenges-show .challenge--mock .guide-section .markdown .code pre,
+.learn-lessons-show .challenge-content .guide-section .markdown pre,
+.learn-lessons-show .challenge-content .guide-section .markdown .code pre,
+.learn-lessons-show .challenge--mock .guide-section .markdown pre,
+.learn-lessons-show .challenge--mock .guide-section .markdown .code pre,
+.school-lessons-show .challenge-content .guide-section .markdown pre,
+.school-lessons-show .challenge-content .guide-section .markdown .code pre,
+.school-lessons-show .challenge--mock .guide-section .markdown pre,
+.school-lessons-show .challenge--mock .guide-section .markdown .code pre,
+.lesson-content .challenge-content .guide-section .markdown pre,
+.lesson-content .challenge-content .guide-section .markdown .code pre,
+.lesson-content .challenge--mock .guide-section .markdown pre,
+.lesson-content .challenge--mock .guide-section .markdown .code pre,
+.challenge-algorithms-new
+  .wrap__preview
+  .challenge-content
+  .guide-section
+  .markdown
+  pre,
+.challenge-algorithms-new
+  .wrap__preview
+  .challenge-content
+  .guide-section
+  .markdown
+  .code
+  pre,
+.challenge-algorithms-new
+  .wrap__preview
+  .challenge--mock
+  .guide-section
+  .markdown
+  pre,
+.challenge-algorithms-new
+  .wrap__preview
+  .challenge--mock
+  .guide-section
+  .markdown
+  .code
+  pre,
+.challenge-algorithms-edit
+  .wrap__preview
+  .challenge-content
+  .guide-section
+  .markdown
+  pre,
+.challenge-algorithms-edit
+  .wrap__preview
+  .challenge-content
+  .guide-section
+  .markdown
+  .code
+  pre,
+.challenge-algorithms-edit
+  .wrap__preview
+  .challenge--mock
+  .guide-section
+  .markdown
+  pre,
+.challenge-algorithms-edit
+  .wrap__preview
+  .challenge--mock
+  .guide-section
+  .markdown
+  .code
+  pre,
+.skill-checks-show .challenge-content .guide-section .markdown pre,
+.skill-checks-show .challenge-content .guide-section .markdown .code pre,
+.skill-checks-show .challenge--mock .guide-section .markdown pre,
+.skill-checks-show .challenge--mock .guide-section .markdown .code pre {
+  border-color: #172334 !important;
+  background-color: #202b3d !important;
+  color: #b2c0cc !important;
 }

@@ -412,10 +412,12 @@ app.post("/answer", async (req, res) => {
     }
 
     const 시험케이스배열 = JSON.parse(exam_answer).map((item) => {
-      return item.answer;
+      return item.result;
     });
 
-    console.log("======== ANSWER ==========");
+    console.log(exam_answer);
+
+    console.log("======== ANSWER ==========\n");
 
     console.log("시험정답 케이스 배열", 시험케이스배열);
     console.log("회원 코드 실행 배열", answer);
@@ -436,7 +438,7 @@ app.post("/answer", async (req, res) => {
         let 회원알고리즘맞음 = false;
 
         시험케이스배열.forEach((item) => {
-          if (JSON.stringify(item) === JSON.stringify(유저케이스배열)) {
+          if (JSON.stringify(item) == JSON.stringify(유저케이스배열)) {
             회원알고리즘맞음 = true;
           }
         });
