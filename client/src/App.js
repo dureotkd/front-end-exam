@@ -52,8 +52,6 @@ function App() {
     (async () => {
       if (!empty(loginUser)) {
         await ajax.get("/alaram").then(({ data }) => {
-          console.log(data);
-
           if (!empty(data)) {
             const res_data = [];
 

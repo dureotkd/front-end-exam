@@ -7,13 +7,13 @@ function Login(param) {
     {
       label: "이메일",
       name: "email",
-      value: "",
+      value: "test@naver.com",
       placeholder: "이메일을 입력해 주세요",
     },
     {
       label: "비밀번호",
       name: "password",
-      value: "",
+      value: "@TEST12345@",
       placeholder: "비밀번호를 입력해 주세요",
     },
   ]);

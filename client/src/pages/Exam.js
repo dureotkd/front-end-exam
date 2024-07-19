@@ -41,9 +41,7 @@ function Exam() {
 
   const [loading, setLoading] = React.useState(true);
   const [exam, setExam] = React.useState(null);
-  const [code, setCode] = React.useState(
-    "function solution(입력) { \n\n  return '정답을 리턴해주세요';\n}\n\n\n\nconst 입력 = '';\nconsole.log(solution(입력));"
-  );
+  const [code, setCode] = React.useState("");
 
   React.useEffect(() => {
     (async () => {
@@ -59,20 +57,22 @@ function Exam() {
           }
 
           setExam(data);
+          setCode(data.start_code.replace(/\\n/g, "\n"));
+        })
+        .finally(() => {
+          setLoading(false);
         });
-
-      setLoading(false);
     })();
   }, [seq]);
 
   const 코드작성 = React.useCallback((value) => {
     setCode(value);
   }, []);
-  const 코드실행 = React.useCallback(
-    (value = "ANY_DEFAULT_012340101231321") => {
-      이전로그다지워();
 
-      const 콘솔프로토타입상속 = `
+  const 코드실행 = React.useCallback(() => {
+    이전로그다지워();
+
+    const 콘솔프로토타입상속 = `
 
       const c = window.console;
 
@@ -93,146 +93,115 @@ function Exam() {
       };
       Console.prototype.__proto__ = ConsoleObject;
       let console = new Console();
-
-      if ('${value}' != 'ANY_DEFAULT_012340101231321' ) {
-        // const 밸류 = JSON.parse('${JSON.stringify(value)}');
-        // console.log(밸류);
-        // console = c;
-      }
-
     `;
 
-      const 최종코드 = 콘솔프로토타입상속 + code;
+    const 최종코드 = 콘솔프로토타입상속 + code;
 
-      try {
-        // eslint-disable-next-line no-new-func
-        new Function(최종코드)();
-      } catch (error) {
-        에러로그보여줘(error);
-      }
-    },
-    [code]
-  );
+    try {
+      // eslint-disable-next-line no-new-func
+      new Function(최종코드)();
+    } catch (error) {
+      에러로그보여줘(error);
+    }
+  }, [code]);
 
   const 제출하기 = React.useCallback(async () => {
-    const 시험케이스배열 = !empty(exam.answer) ? JSON.parse(exam.answer) : null;
+    const 시험매게변수배열 = !empty(exam.request)
+      ? JSON.parse(exam.request)
+      : null;
 
     // =============================== 회원코드실행 ===============================
 
-    let cleanedCode = code.replace(/^\s*console\.log.*$/gm, "");
-    let 임의함수 = `
+    let 사용자정답 = "";
+    let 사용자정답코드 = `
 
         const USER_ANSWER = () => {
+         
+          ${code};
           
-          return (${cleanedCode})();
+          return solution();
         }
 
         return USER_ANSWER;
     `;
 
     try {
-      let 임의함수가상머신 = new Function(임의함수);
-      let 사용자코드리턴값 = 임의함수가상머신()();
+      let 사용자정답가상머신 = new Function(사용자정답코드);
+      사용자정답 = 사용자정답가상머신()();
 
-      코드실행(사용자코드리턴값);
+      코드실행(사용자정답);
     } catch (error) {
       에러로그보여줘(error);
     }
+
+    console.log(사용자정답);
 
     // =============================== 회원코드실행 ===============================
 
-    // =============================== 매게변수 ===============================
-
-    const match = cleanedCode.match(/\(([^)]+)\)/);
-    let arguments2 = "";
-    if (match) {
-      arguments2 = match[1].replace(/\s+/g, "");
-    }
-    const arguments_array = `{${arguments2}}`;
-
-    console.log(arguments_array);
-
-    const jsonString = arguments_array
-      .replace(/(\w+)=/g, '"$1":') // 키를 큰따옴표로 감싸기
-      .replace(/=/g, ":"); // 등호를 콜론으로 변환
-
-    const jsonArray = JSON.parse(jsonString);
-    const 시험매개변수 = {};
-
-    for (let key in jsonArray) {
-      시험매개변수[key] = 시험케이스배열[0][key];
-    }
+    /**
+     *
+     * 매게변수를 DB에 있는걸로 전환 후 비교해서
+     * 사용자 정답과 Equl 해야한다
+     */
 
     // =============================== 매게변수 ===============================
+
+    const new_arguments = {};
+    const result_codes = [];
+    /**
+     * [
+     * "food=[1,2,3,4],asd=[1,2]",
+     * "food=[1,3,4,6]"
+     * ]
+     */
+
+    시험매게변수배열.forEach((items, index) => {
+      for (let key in items) {
+        if (empty(new_arguments[index])) {
+          new_arguments[index] = `${key}=${JSON.stringify(items[key])}`;
+        } else {
+          new_arguments[index] += `,${key}=${JSON.stringify(items[key])}`;
+        }
+      }
+    });
+
+    // =============================== 매게변수 ===============================
+    const match = code.match(/\(([^)]+)\)/);
+
+    for (let x of Object.values(new_arguments)) {
+      const 매게변수만바꾼함수_1 = code.replace(match[1], x);
+      result_codes.push(매게변수만바꾼함수_1);
+    }
+
+    /**
+     * 1. 회원 코드 실행
+     *
+     *
+     */
 
     // =============================== 회원코드를 바탕으로 시험 매게변수 대입 ===============================
 
-    let 즉시실행함수로묶기 = ` 
-      const EXCUTE_ANSWER = () => {
+    const answer = [];
 
-        let 이사람이구현한값 = null;
-        const 기본케이스 = [];
+    for await (let f of result_codes) {
+      try {
+        let 시험정답코드 = ` 
+        const EXAM_ANSWER = () => {
+  
+          ${f}
+  
+          return solution();
+        }
+  
+        return EXAM_ANSWER;
+      `;
 
-        const 문자로변환 = '${JSON.stringify(시험매개변수)}';
-        const 인풋과아웃풋들 = JSON.parse(문자로변환);
-
-        console.log(인풋과아웃풋들);
-
-
-        ${code}
-
-
-
-        // for(let key in 인풋과아웃풋들) {
-        //   // const { input , answer } = 인풋과아웃풋들[key];
-
-        //   const arguments = 인풋과아웃풋들[key];
-        //   const arguments_str = JSON.stringify(arguments);
-
-        //   console.log(arguments_str);
-
-        //   // let solution_str = 'solution(';
-
-        //   // for (let index in arguments) {
-          
-        //   //   const argument = arguments[index];
-
-        //   //   if (index == 'result') {
-        //   //     continue;
-        //   //   }
-
-        //   //   solution_str += index + '=' + argument;
-        //   // }
-
-        //   // console.log(solution_str);
-
-
-        //   내가비교할정답배열들.push(solution(input));
-        // }
-
-        // 이사람이구현한값 = solution(입력);
-
-        return {
-          기본케이스 : 기본케이스,
-          // 유저케이스 : 이사람이구현한값
-        };
+        let 시험정답가상머신 = new Function(시험정답코드);
+        let 시험정답 = 시험정답가상머신()();
+        answer.push(시험정답);
+      } catch (error) {
+        에러로그보여줘(error);
       }
-
-      return EXCUTE_ANSWER;
-    `;
-
-    let 정답케이스들 = null;
-
-    try {
-      // eslint-disable-next-line no-new-func
-      let 가상머신함수 = new Function(즉시실행함수로묶기);
-      정답케이스들 = 가상머신함수()();
-
-      console.log(정답케이스들);
-
-      코드실행(정답케이스들.유저케이스);
-    } catch (error) {
-      에러로그보여줘(error);
     }
 
     // =============================== 회원코드를 바탕으로 시험 매게변수 대입 ===============================
@@ -240,8 +209,9 @@ function Exam() {
     await ajax
       .post("/answer", {
         seq: seq,
-        answer: 정답케이스들,
+        answer: answer,
         code: code,
+        user_answer: 사용자정답,
       })
       .then(async ({ data: { code, last_yn } }) => {
         if (code === "success") {
@@ -295,7 +265,7 @@ function Exam() {
           });
         }
       });
-  }, [code, exam?.answer, seq, setShowModal, 코드실행]);
+  }, [code, exam?.answer, exam?.request, seq, setShowModal, 코드실행]);
 
   React.useEffect(() => {
     const 키보드탐지 = (event) => {
@@ -401,7 +371,6 @@ function Exam() {
       >
         <div style={{ display: "flex", alignItems: "center" }}>
           <h2>{exam.title}</h2>
-          <div className="category-box">초급</div>
         </div>
         <div className="margin-left-wrap" style={{ display: "flex" }}>
           <button type="button" className="exam-btn" onClick={타이머시작}>

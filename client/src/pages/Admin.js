@@ -110,8 +110,6 @@ function Admin() {
   }, []);
 
   const 에디터내용가져오자 = React.useCallback(() => {
-    console.log(editorRef.current.getInstance());
-
     const data = editorRef.current.getInstance().getHTML();
     setBody(data);
   }, []);

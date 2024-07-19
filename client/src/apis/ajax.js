@@ -72,8 +72,8 @@ instance.interceptors.response.use(
           message: "로그인 후 이용해주세요",
         });
 
-        await time_helper.wait(3000);
-        window.location = "/";
+        await time_helper.wait(1500);
+        // window.location = "/";
 
         break;
 

@@ -89,7 +89,6 @@ function Join(param) {
 
   const handleInputValue = React.useCallback(
     ({ target: { name, value } }) => {
-      console.log(name, value);
       const clonePrev = [...inputs];
       const findIndex = clonePrev.findIndex((item) => {
         return item.name === name;

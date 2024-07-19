@@ -190,7 +190,6 @@ function QuestionForm() {
         [...event.dataTransfer.items].forEach((item, i) => {
           if (item.kind === "file") {
             const file = item.getAsFile();
-            console.log(`… file[${i}].name = ${file.name}`);
 
             const cloneFiles = [...files];
             cloneFiles.push(file);

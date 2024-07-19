@@ -53,10 +53,10 @@ app.use((req, res, next) => {
   const req_name = path_array[path_array.length - 1];
   const 로그인필요없는요청 = ["login", "logout", "join"];
 
-  // if (로그인필요없는요청.includes(req_name) === false && empty(loginUser)) {
-  //   res.status(401).send("");
-  //   return;
-  // }
+  if (로그인필요없는요청.includes(req_name) === false && empty(loginUser)) {
+    res.status(401).send("");
+    return;
+  }
 
   next();
 });
@@ -76,8 +76,6 @@ const socketDB = {
 io.on("connection", (socket) => {
   const socket_id = socket.id;
 
-  console.log("소켓서버시작", socket_id);
-
   socket.on("클라이언트방에넣기", (user) => {
     if (empty(user)) {
       return;
@@ -85,8 +83,6 @@ io.on("connection", (socket) => {
 
     const user_seq = user.seq;
     socketDB.room[socket_id] = user_seq;
-
-    console.log(socketDB);
   });
 
   socket.on("질문답변", ({ user_seq, body }) => {
@@ -98,7 +94,6 @@ io.on("connection", (socket) => {
         const 특정회원번호 = socketDB.room[소켓아이디];
 
         if (특정회원번호 == user_seq) {
-          console.log(소켓아이디, "가야되는데..?");
           const 데이터값 = body[user_seq];
           데이터값.now_date = res_now_date;
 
@@ -110,7 +105,6 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     delete socketDB.room[socket_id];
-    console.log("소켓서버종료");
   });
 });
 
@@ -249,29 +243,6 @@ app.get("/exam", async (req, res) => {
     type: "row",
   });
 
-  // let user_ids = exam_row?.user_ids || "";
-
-  // if (user_ids.includes(`${loginUser.seq}/`) === true) {
-  //   res.send(exam_row);
-  //   return;
-  // }
-
-  // user_ids += `${loginUser.seq}/`;
-
-  // const update_sql = Model.getUpdateQuery({
-  //   table: "exam",
-  //   data: {
-  //     user_ids: user_ids,
-  //     edit_date: now_date,
-  //   },
-  //   where: [`seq = ${seq}`],
-  // });
-
-  // await Model.excute({
-  //   sql: update_sql,
-  //   type: "exec",
-  // });
-
   res.send(exam_row);
 });
 
@@ -311,7 +282,6 @@ app.get("/all/exam", async (req, res) => {
       const success_len = !empty(success_user_ids)
         ? success_user_ids.split("/").length - 1
         : 0;
-      console.log(user_ids);
 
       const user_len = !empty(user_ids) ? user_ids.split("/").length - 1 : 0;
 
@@ -367,8 +337,6 @@ app.post("/exam", async (req, res) => {
     type: "exec",
   });
 
-  console.log(insert_seq);
-
   res.send({
     code: "success",
     data: insert_seq,
@@ -378,7 +346,7 @@ app.post("/exam", async (req, res) => {
 /** */
 app.post("/answer", async (req, res) => {
   const { loginUser } = req.session;
-  const { seq, answer, code } = req.body;
+  const { seq, answer, code, user_answer } = req.body;
 
   const now_date = get_now_date();
   const result = {
@@ -403,7 +371,9 @@ app.post("/answer", async (req, res) => {
       break;
     }
 
-    const exam_answer = !empty(exam_row.answer) ? exam_row.answer : "";
+    const exam_answer = !empty(exam_row.answer)
+      ? JSON.parse(exam_row.answer)
+      : "";
 
     if (empty(exam_answer)) {
       result.code = "error";
@@ -411,63 +381,34 @@ app.post("/answer", async (req, res) => {
       break;
     }
 
-    const 시험케이스배열 = JSON.parse(exam_answer).map((item) => {
-      return item.result;
-    });
-
-    console.log(exam_answer);
-
-    console.log("======== ANSWER ==========\n");
-
-    console.log("시험정답 케이스 배열", 시험케이스배열);
-    console.log("회원 코드 실행 배열", answer);
-
-    const 기본케이스배열 = answer?.기본케이스;
-    const 유저케이스배열 = answer?.유저케이스;
-
-    const 다중배열 = Array.isArray(시험케이스배열[0]);
-
-    /**
-     * 1. 유저가 구현한 값이 기본케이스에 없다면 실패
-     * 2. 시험케이스배열과 기본케이스배열이 갖지 않다면 실패
-     */
-    switch (다중배열) {
-      case true:
-        console.log("=========== 다중배열 문제 ============");
-
-        let 회원알고리즘맞음 = false;
-
-        시험케이스배열.forEach((item) => {
-          if (JSON.stringify(item) == JSON.stringify(유저케이스배열)) {
-            회원알고리즘맞음 = true;
-          }
-        });
-
-        if (
-          회원알고리즘맞음 === false ||
-          JSON.stringify(시험케이스배열) != JSON.stringify(기본케이스배열)
-        ) {
-          result.code = "error";
-          result.message = "오답입니다";
-        }
-
-        break;
-
-      default:
-        console.log("=========== 디폴트 문제 ============");
-
-        if (
-          기본케이스배열?.includes(유저케이스배열) === false ||
-          JSON.stringify(시험케이스배열) != JSON.stringify(기본케이스배열)
-        ) {
-          result.code = "error";
-          result.message = "오답입니다";
-        }
-
-        break;
+    if (empty(user_answer)) {
+      result.code = "error";
+      result.message = "오답입니다";
+      break;
     }
 
-    if (result.code === "error") {
+    /**
+     *
+     */
+    let complete = deepEqual(exam_answer, answer);
+
+    console.log(`deepEqul - ${complete}`);
+
+    console.log(exam_answer, user_answer);
+    console.log(user_answer);
+
+    for (let i = 0; i < exam_answer.length; i++) {
+      if (deepEqual(exam_answer[i], user_answer)) {
+        complete = true;
+        break;
+      }
+    }
+
+    console.log(`?? - ${complete}`);
+
+    if (!complete) {
+      result.code = "error";
+      result.message = "오답입니다";
       break;
     }
 
@@ -797,4 +738,20 @@ function replaceAllObject(obj, replace, str) {
   }
 
   return res;
+}
+
+function deepEqual(x, y) {
+  // Check if both values are arrays
+  if (Array.isArray(x) && Array.isArray(y)) {
+    // Compare lengths first
+    if (x.length !== y.length) return false;
+    // Recursively compare each element
+    for (let i = 0; i < x.length; i++) {
+      if (!deepEqual(x[i], y[i])) return false;
+    }
+    return true;
+  } else {
+    // If not arrays, compare values as strings
+    return String(x) === String(y);
+  }
 }

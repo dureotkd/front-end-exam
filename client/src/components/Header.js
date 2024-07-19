@@ -47,8 +47,6 @@ function Header({ navigation }) {
     [setShowModal]
   );
 
-  console.log(alarmData);
-
   return (
     <div className="nav-bar">
       <p style={{ color: "rgb(108 108 108)" }}>{navigation}</p>
