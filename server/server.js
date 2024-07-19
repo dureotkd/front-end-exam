@@ -391,22 +391,21 @@ app.post("/answer", async (req, res) => {
      *
      */
     let complete = deepEqual(exam_answer, answer);
-
-    console.log(`deepEqul - ${complete}`);
+    let complete_2 = false;
 
     console.log(exam_answer, user_answer);
     console.log(user_answer);
 
     for (let i = 0; i < exam_answer.length; i++) {
       if (deepEqual(exam_answer[i], user_answer)) {
-        complete = true;
+        complete_2 = true;
         break;
       }
     }
 
-    console.log(`?? - ${complete}`);
+    console.log(`complete - ${complete} complete_2 - ${complete_2}`);
 
-    if (!complete) {
+    if (!complete || !complete_2) {
       result.code = "error";
       result.message = "오답입니다";
       break;
