@@ -73,7 +73,11 @@ function Header({ navigation }) {
       </div>
       {navi && (
         <div className="navigation-ui">
-          <h3 onClick={모달컨트롤.bind(this, "ALARM")}>
+          <h3
+            onClick={() => {
+              alert("준비중입니다");
+            }}
+          >
             알림
             {!empty(alarmData.data) && (
               <span style={{ color: "#000" }}>({alarmData.data.length})</span>

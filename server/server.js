@@ -405,7 +405,9 @@ app.post("/answer", async (req, res) => {
 
     console.log(`complete - ${complete} complete_2 - ${complete_2}`);
 
-    if (!complete || !complete_2) {
+    if (complete) {
+      console.log("정답입니다.");
+    } else {
       result.code = "error";
       result.message = "오답입니다";
       break;
