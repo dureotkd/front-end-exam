@@ -5,8 +5,8 @@ import { time_helper, util_helper } from "../helpers";
 // ==================================== 요청 ======================================
 export const baseURL =
   window.location.host.indexOf("localhost") !== -1
-    ? "http://localhost:8081"
-    : "http://43.203.205.91:8081";
+    ? "http://localhost:8080"
+    : "http://13.125.104.30:8080";
 
 const instance = axios.create({
   baseURL: baseURL,
