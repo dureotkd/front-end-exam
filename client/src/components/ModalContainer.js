@@ -248,7 +248,7 @@ function QuestionForm() {
               />
             );
           })}
-        <div onDrop={드래그드랍되었을떄} style={{ position: "relative" }}>
+        {/* <div onDrop={드래그드랍되었을떄} style={{ position: "relative" }}>
           <div className="file-drop-box" />
           <h3 className="file-description">FILE DROP</h3>
           <input
@@ -257,7 +257,7 @@ function QuestionForm() {
             type="file"
             accept="image/*"
           />
-        </div>
+        </div> */}
         {!empty(files) &&
           files.map((item, index) => {
             return (
