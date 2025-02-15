@@ -47,7 +47,7 @@ app.use((req, res, next) => {
   const req_name = path_array[path_array.length - 1];
   const 로그인필요없는요청 = ["login", "logout", "join"];
 
-  if (로그인필요없는요청.includes(req_name) && req.method === "POST") {
+  if (로그인필요없는요청.includes(req_name)) {
     next();
     return;
   }
