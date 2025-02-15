@@ -1,5 +1,4 @@
 import React from "react";
-import * as Sentry from "@sentry/browser";
 
 class ErrorBoundary extends React.Component {
   state = { error: false, info: "" };
