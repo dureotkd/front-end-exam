@@ -34,6 +34,7 @@ app.use(
     secret: "THISSECRET",
     resave: false,
     saveUninitialized: true,
+    proxy: true,
     cookie: {
       secure: true, // HTTPS 환경에서만 작동 (프론트/백 둘 다 HTTPS 필요)
       httpOnly: true, // JavaScript에서 쿠키 접근 방지 (보안 강화)
