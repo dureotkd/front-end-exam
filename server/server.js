@@ -18,6 +18,13 @@ const model = require("./model/core");
 const Model = new model();
 // const UserModel = require("./model/user/userModel");
 
+app.use(
+  cors({
+    origin: "https://exam-six-cyan.vercel.app",
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
@@ -32,13 +39,6 @@ app.use(
       httpOnly: true, // JavaScript에서 쿠키 접근 방지 (보안 강화)
       sameSite: "none", // Cross-Origin 요청 허용
     },
-  })
-);
-
-app.use(
-  cors({
-    origin: "https://exam-six-cyan.vercel.app",
-    credentials: true,
   })
 );
 
