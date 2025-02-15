@@ -21,16 +21,24 @@ const Model = new model();
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
+const session = require("express-session");
+
 app.use(
   session({
     secret: "THISSECRET",
     resave: false,
     saveUninitialized: true,
+    cookie: {
+      secure: true, // HTTPS 환경에서만 작동 (프론트/백 둘 다 HTTPS 필요)
+      httpOnly: true, // JavaScript에서 쿠키 접근 방지 (보안 강화)
+      sameSite: "none", // Cross-Origin 요청 허용
+    },
   })
 );
+
 app.use(
   cors({
-    origin: true,
+    origin: "*",
     credentials: true,
   })
 );
