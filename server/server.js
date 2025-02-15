@@ -22,8 +22,8 @@ const Model = new model();
 app.set("trust proxy", 1);
 app.use(
   cors({
-    origin: "https://exam-six-cyan.vercel.app",
-    // origin: "http://localhost:3000",
+    // origin: "https://exam-six-cyan.vercel.app",
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
@@ -360,6 +360,8 @@ app.post("/answer", async (req, res) => {
   const { loginUser } = req.session;
   const { seq, answer, code, user_answer } = req.body;
 
+  console.log("xxxxxxxxxxxxx", loginUser);
+
   const now_date = get_now_date();
   const result = {
     code: "success",
@@ -424,27 +426,6 @@ app.post("/answer", async (req, res) => {
       result.message = "오답입니다";
       break;
     }
-
-    const 사용자답변코드 = code.replaceAll("'", '"');
-    const exam_result_duplicate_sql = Model.getDuplicateQuery({
-      table: "exam_result",
-      insertData: {
-        result_body: 사용자답변코드,
-        user_seq: loginUser.seq,
-        exam_seq: seq,
-        reg_date: now_date,
-        edit_date: now_date,
-      },
-      updateData: {
-        result_body: 사용자답변코드,
-        edit_date: now_date,
-      },
-    });
-
-    await Model.excute({
-      sql: exam_result_duplicate_sql,
-      type: "exec",
-    });
 
     const last_exam_row = await Model.excute({
       database: "code_exam",
