@@ -21,7 +21,6 @@ const Model = new model();
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
-const session = require("express-session");
 
 app.use(
   session({
@@ -54,6 +53,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.use((req, res, next) => {
+  console.log(req.session);
+
   const { loginUser } = req.session;
 
   const path_array = req.path.split("/");
