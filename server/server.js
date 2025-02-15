@@ -38,7 +38,7 @@ app.use(
 
 app.use(
   cors({
-    origin: "*",
+    origin: "https://exam-six-cyan.vercel.app",
     credentials: true,
   })
 );
