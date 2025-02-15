@@ -17,7 +17,7 @@ const cookieParser = require("cookie-parser");
 const model = require("./model/core");
 const Model = new model();
 // const UserModel = require("./model/user/userModel");
-
+app.use("trust proxy", 1);
 app.use(
   cors({
     origin: "https://exam-six-cyan.vercel.app",
@@ -34,7 +34,7 @@ app.use(
     secret: "THISSECRET",
     resave: false,
     saveUninitialized: true,
-    proxy: true,
+    proxy: true, // 왜 proxy true하니까 됐을까?? (공부 필요..)
     cookie: {
       secure: true, // HTTPS 환경에서만 작동 (프론트/백 둘 다 HTTPS 필요)
       httpOnly: true, // JavaScript에서 쿠키 접근 방지 (보안 강화)
