@@ -47,7 +47,7 @@ function AnotherPeopleAnswer() {
           width: "100%",
         }}
       >
-        <h2>답이 없습니다</h2>
+        <h2 className="text-2xl font-bold">답이 없습니다</h2>
       </div>
     );
   }
@@ -101,7 +101,7 @@ function Problem() {
 
   return (
     <div className="modal-children-box">
-      <h2>문제</h2>
+      <h2 className="text-2xl font-bold">문제</h2>
 
       <div>
         <table className="ui celled table">
@@ -235,7 +235,7 @@ function QuestionForm() {
 
   return (
     <div className="modal-children-box">
-      <h2>질문하기</h2>
+      <h2 className="text-2xl font-bold">질문하기</h2>
       <div style={{ marginTop: 40 }}>
         {inputs &&
           inputs.map((item, index) => {
@@ -315,7 +315,7 @@ function Alarm() {
 
   return (
     <div className="modal-children-box">
-      <h2>알림</h2>
+      <h2 className="text-2xl font-bold">알림</h2>
       <div className="alaram_wrap">
         {!empty(alarmData.data) ? (
           <div style={{ marginTop: 12 }}>
@@ -340,7 +340,7 @@ function Alarm() {
 function MyQuestion() {
   return (
     <div className="modal-children-box">
-      <h2>나의질문</h2>
+      <h2 className="text-2xl font-bold">나의질문</h2>
     </div>
   );
 }
@@ -388,7 +388,7 @@ function ModalContainer({ showModal: { show, code, component } }) {
         }
       />
       <div
-        className="modal"
+        className="lg:w-1/2 lg:max-h-max w-5/6 max-h-[400px] modal"
         style={
           show
             ? {

@@ -228,7 +228,7 @@ function Exam() {
                     justifyContent: "space-between",
                   }}
                 >
-                  <h2>정답입니다</h2>
+                  <h2 className="text-2xl font-bold">정답입니다</h2>
                   <div
                     style={{
                       display: "flex",
@@ -353,10 +353,9 @@ function Exam() {
 
   return (
     <div
+      className="lg:overflow-hidden lg:min-h-auto lg:h-screen h-full"
       style={{
-        overflow: "hidden",
         backgroundColor: "#263747",
-        height: "100vh",
       }}
     >
       <Header navigation="Javascript > 알고리즘 문제" />
@@ -372,17 +371,23 @@ function Exam() {
         <div style={{ display: "flex", alignItems: "center" }}>
           <h2>{exam.title}</h2>
         </div>
-        <div className="margin-left-wrap" style={{ display: "flex" }}>
-          <button type="button" className="exam-btn" onClick={타이머시작}>
+        <div className="lg:flex hidden margin-left-wrap">
+          <button
+            className="text-sm exam-btn"
+            type="button"
+            onClick={타이머시작}
+          >
             {timer ? timer : "타이머"}
           </button>
         </div>
       </div>
-      <div className="exam_box" style={{ display: "flex", height: "80%" }}>
+      <div
+        className="lg:flex-row flex flex-col  exam_box"
+        style={{ height: "80%" }}
+      >
         <div
-          className="scrollBar"
+          className="lg:w-2/5 scrollBar"
           style={{
-            width: "45%",
             padding: 14,
             paddingLeft: 20,
             borderRight: "1px solid #263238",
@@ -400,44 +405,48 @@ function Exam() {
         <Horizontal />
         <div
           id="code_mirror_wrap"
+          className="lg:w-3/5"
           style={{
             padding: 20,
-            width: "65%",
             height: "100%",
             flexDirection: "column",
           }}
         >
           <CodeMirror value={code} onChange={코드작성} />
-          <div id="my_log" className="code_result"></div>
+          <div id="my_log" className="code_result">
+            <pre class="log-msg">"This is console.log"</pre>
+          </div>
         </div>
       </div>
       <div
+        className="lg:absolute lg:p-[10px] p-[20px] text-sm"
         style={{
-          padding: 10,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           width: "100%",
-          position: "absolute",
           bottom: 12,
         }}
       >
         <button
           onClick={질문하기}
-          className="exam-btn"
+          className="lg:block hidden"
           style={{
             width: 120,
             height: 40,
             fontWeight: "bold",
             backgroundColor: "#263238",
             color: "#fff",
-            fontSize: 16,
             borderRadius: 6,
           }}
         >
           질문하기
         </button>
-        <div style={{ display: "flex", alignItems: "center" }}>
+
+        <div
+          className="lg:w-auto w-full justify-between"
+          style={{ display: "flex", alignItems: "center" }}
+        >
           <ExecuteButton text="정답보기" onClick={정답보기} />
           <ExecuteButton
             text="코드실행 (F9)"

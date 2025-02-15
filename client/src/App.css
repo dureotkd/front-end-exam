@@ -1,4 +1,6 @@
-@charset "utf-8";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @font-face {
   font-family: "HackBold";
@@ -202,7 +204,6 @@ pre {
   top: 25%;
   left: 50%;
   transform: translate(-50%, 0%);
-  min-width: 800px;
   min-height: 300px;
   border-radius: 12px;
   background-color: #ffffff;
@@ -285,7 +286,6 @@ pre {
   position: absolute;
   top: 45px;
   right: 20px;
-  width: 300px;
   min-height: 100px;
   background-color: #fff;
   border-radius: 6px;
@@ -368,8 +368,7 @@ pre {
 
 .horizontal {
   width: 24px;
-  background: url(https://school.programmers.co.kr/assets/img-grippie-vertical-86e641691e88be56a100b80e3d437ae6effea08c189fdbdb2396825486763a15.png)
-    no-repeat 0.625rem 50%;
+  background: url("../public/images/horiz.png") no-repeat 0.625rem 50%;
   background-size: 0.875rem 2.25rem;
   cursor: ew-resize;
 }

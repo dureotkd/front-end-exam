@@ -14,7 +14,7 @@ function AnswerSuccess({ last_yn, seq }) {
         justifyContent: "space-between",
       }}
     >
-      <h2>정답입니다</h2>
+      <h2 className="text-2xl font-bold">정답입니다</h2>
       <div
         style={{
           display: "flex",

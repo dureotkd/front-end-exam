@@ -68,7 +68,9 @@ function Horizontal() {
     [data]
   );
 
-  return <div className="horizontal" onMouseDown={마우스클릭}></div>;
+  return (
+    <div className="lg:block hidden horizontal" onMouseDown={마우스클릭}></div>
+  );
 }
 
 export default Horizontal;
