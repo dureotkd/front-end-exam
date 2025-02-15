@@ -22,8 +22,8 @@ const Model = new model();
 app.set("trust proxy", 1);
 app.use(
   cors({
-    // origin: "https://exam-six-cyan.vercel.app",
-    origin: "http://localhost:3000",
+    origin: "https://exam-six-cyan.vercel.app",
+    // origin: "http://localhost:3000",
     credentials: true,
   })
 );
