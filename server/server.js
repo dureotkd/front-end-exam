@@ -17,7 +17,8 @@ const cookieParser = require("cookie-parser");
 const model = require("./model/core");
 const Model = new model();
 // const UserModel = require("./model/user/userModel");
-app.use("trust proxy", 1);
+app.set("trust proxy", 1);
+
 app.use(
   cors({
     origin: "https://exam-six-cyan.vercel.app",
