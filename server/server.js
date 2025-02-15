@@ -11,17 +11,19 @@ const cors = require("cors");
 const fs = require("fs");
 const multer = require("multer");
 
-const session = require("express-session");
 const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
 const model = require("./model/core");
 const Model = new model();
-// const UserModel = require("./model/user/userModel");
-app.set("trust proxy", 1);
 
+// const UserModel = require("./model/user/userModel");
+
+app.set("trust proxy", 1);
 app.use(
   cors({
-    origin: "https://exam-six-cyan.vercel.app",
+    // origin: "https://exam-six-cyan.vercel.app",
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
@@ -29,20 +31,6 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
-
-app.use(
-  session({
-    secret: "THISSECRET",
-    resave: false,
-    saveUninitialized: true,
-    proxy: true, // 왜 proxy true하니까 됐을까?? (공부 필요..)
-    cookie: {
-      secure: true, // HTTPS 환경에서만 작동 (프론트/백 둘 다 HTTPS 필요)
-      httpOnly: true, // JavaScript에서 쿠키 접근 방지 (보안 강화)
-      sameSite: "none", // Cross-Origin 요청 허용
-    },
-  })
-);
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -55,18 +43,30 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.use((req, res, next) => {
-  console.log(req.session);
-
-  const { loginUser } = req.session;
-
   const path_array = req.path.split("/");
   const req_name = path_array[path_array.length - 1];
   const 로그인필요없는요청 = ["login", "logout", "join"];
 
-  if (로그인필요없는요청.includes(req_name) === false && empty(loginUser)) {
-    res.status(401).send("");
+  if (로그인필요없는요청.includes(req_name) && req.method === "POST") {
+    next();
     return;
   }
+
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  jwt.verify(token, "secret_key", (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    req.session = {
+      loginUser: user,
+    };
+  });
 
   next();
 });
@@ -134,10 +134,10 @@ app.get("/test", (req, res) => {
 app.get("/login", (req, res) => {
   const result = {
     code: "fail",
-    msg: "로그인 실패입니다..?aaa",
+    msg: "로그인 실패",
   };
 
-  const loginUser = req.session.loginUser;
+  const loginUser = req.session?.loginUser;
 
   if (loginUser) {
     result.code = "success";
@@ -155,6 +155,7 @@ app.post("/login", async (req, res) => {
   const result = {
     code: "success",
     message: "로그인 성공",
+    token: "",
   };
 
   const user_row_sql = `SELECT * FROM code_exam.user WHERE email = '${email}' AND password = '${password}'`;
@@ -178,8 +179,11 @@ app.post("/login", async (req, res) => {
 
   result.direct_url = `/exam/${last_exam_seq}`;
 
-  req.session.loginUser = user_row;
-  req.session.save();
+  const token = jwt.sign({ loginUser: user_row }, "secret_key", {
+    expiresIn: "8h",
+  });
+
+  result.token = token;
 
   res.send(result);
 });
@@ -189,9 +193,7 @@ app.post("/logout", (req, res) => {
     code: "success",
   };
 
-  req.session.destroy(function () {
-    req.session;
-  });
+  req.session = {};
 
   res.send(result);
 });

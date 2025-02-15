@@ -5,7 +5,7 @@ import { time_helper, util_helper } from "../helpers";
 // ==================================== 요청 ======================================
 export const baseURL =
   window.location.host.indexOf("localhost") !== -1
-    ? "http://localhost:8080"
+    ? "http://localhost:8000"
     : "https://api-w2.okpann.com";
 
 const instance = axios.create({
@@ -20,6 +20,14 @@ instance.interceptors.request.use(
     // 요청 보내기 전  수행로직
     config
   ) => {
+    console.log(config);
+
+    const jwt = window.localStorage.getItem("jwt");
+
+    if (jwt) {
+      config.headers.Authorization = `Bearer ${jwt}`;
+    }
+
     return config;
   },
 

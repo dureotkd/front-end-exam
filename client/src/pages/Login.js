@@ -52,8 +52,6 @@ function Login(param) {
     return result;
   }, [inputs]);
 
-  console.log(disabled);
-
   const handleLogin = React.useCallback(
     async (event) => {
       event.preventDefault();
@@ -68,8 +66,9 @@ function Login(param) {
         .post("/login", {
           input_value,
         })
-        .then(({ data: { code, direct_url } }) => {
+        .then(({ data: { code, token, direct_url } }) => {
           if (code === "success") {
+            window.localStorage.setItem("jwt", token);
             window.location.href = direct_url;
           }
         });

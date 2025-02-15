@@ -32,6 +32,7 @@ function Header({ navigation }) {
   const 로그아웃 = React.useCallback(async () => {
     await ajax.post("/logout").then(({ data: { code } }) => {
       if (code === "success") {
+        window.localStorage.removeItem("jwt");
         window.location.href = "/";
       }
     });
