@@ -6,7 +6,7 @@ import { time_helper, util_helper } from "../helpers";
 export const baseURL =
   window.location.host.indexOf("localhost") !== -1
     ? "http://localhost:8000"
-    : "https://api-w2.okpann.com";
+    : "https://api-w1.sungmin.my";
 
 const instance = axios.create({
   baseURL: baseURL,
